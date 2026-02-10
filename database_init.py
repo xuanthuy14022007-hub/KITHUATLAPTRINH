@@ -1,0 +1,101 @@
+import sqlite3
+
+def init_db():
+    """
+    Hàm khởi tạo cơ sở dữ liệu cho dự án Nông Ơi!
+    Thủy có thể chạy độc lập file này để tạo file .db trước
+    hoặc import vào main.py để khởi tạo khi mở app.
+    """
+    # Kết nối đến file database (Tự động tạo nếu chưa có)
+    conn = sqlite3.connect('nong_oi.db')
+    cursor = conn.cursor()
+
+    # Kích hoạt tính năng khóa ngoại (Bắt buộc trong SQLite để liên kết các bảng)
+    cursor.execute("PRAGMA foreign_keys = ON;")
+
+    # --- 1. BẢNG NGƯỜI DÙNG ---
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Users (
+        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL,        
+        full_name TEXT
+    )''')
+
+    # --- 2. BẢNG DANH MỤC CÂY TRỒNG ---
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Crops (
+        crop_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        crop_name TEXT NOT NULL,
+        category TEXT,             -- Dùng để gợi ý Luân canh
+        base_price REAL DEFAULT 0
+    )''')
+
+    # --- 3. BẢNG VỤ MÙA & CHI PHÍ ---
+    # Đây là nơi lưu thông tin ban đầu khi Thủy bấm "Thêm cây trồng"
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS FarmingActivities (
+        activity_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        farmer_id INTEGER,
+        crop_id INTEGER,
+        farm_name TEXT,            -- Tên thửa đất người dùng tự đặt
+        area REAL,                 -- Diện tích trồng (m2)
+        cost_seeds REAL DEFAULT 0,
+        cost_fertilizer REAL DEFAULT 0,
+        cost_labor REAL DEFAULT 0,
+        other_costs REAL DEFAULT 0,
+        start_date TEXT,           -- Ngày bắt đầu vụ (YYYY-MM-DD)
+        FOREIGN KEY(farmer_id) REFERENCES Users(user_id),
+        FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
+    )''')
+
+    # --- 4. BẢNG NHẬT KÝ KỸ THUẬT ---
+    # Nơi Thủy cập nhật các hoạt động hàng ngày cho từng cây
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS ActivityLog (
+        log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        activity_id INTEGER,       -- Liên kết với vụ mùa đang chọn
+        farm_name TEXT,            -- Tên thửa đất để dễ truy vấn
+        action_type TEXT,          -- Gieo hạt, Bón phân, Thu hoạch...
+        quantity REAL DEFAULT 0,   -- Sản lượng thực tế (chỉ dùng khi thu hoạch)
+        log_date TEXT,             -- Thời gian thực hiện
+        soil_status TEXT,          -- Ghi chú tình trạng đất
+        FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
+    )''')
+
+    # --- 5. BẢNG ĐƠN HÀNG ---
+    # Dùng để tính doanh thu cho mục Phân tích báo cáo
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Orders (
+        order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        merchant_id INTEGER,
+        farmer_id INTEGER,
+        status TEXT DEFAULT 'Chờ xác nhận',
+        total_amount REAL DEFAULT 0,
+        order_date TEXT,           -- Dùng để vẽ biểu đồ theo tháng
+        FOREIGN KEY(merchant_id) REFERENCES Users(user_id),
+        FOREIGN KEY(farmer_id) REFERENCES Users(user_id)
+    )''')
+
+    # --- 6. BẢNG CHI TIẾT ĐƠN HÀNG ---
+    # Dùng để vẽ biểu đồ tròn tỷ lệ các loại nông sản bán chạy
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS OrderItems (
+        item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        order_id INTEGER,
+        crop_id INTEGER,
+        quantity REAL,
+        unit_price REAL,
+        FOREIGN KEY(order_id) REFERENCES Orders(order_id),
+        FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
+    )''')
+
+    # Lưu thay đổi và đóng kết nối
+    conn.commit()
+    conn.close()
+    print(">>> Hệ thống Database Nông Ơi! đã sẵn sàng.")
+
+# Cho phép chạy file này độc lập để kiểm tra
+if __name__ == "__main__":
+    init_db()
