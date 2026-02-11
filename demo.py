@@ -13,13 +13,13 @@ def seed_data():
     cursor.execute("DELETE FROM Crops")
     cursor.execute("DELETE FROM Users")
 
-    # --- 1. USERS: Thêm đủ 6 cột (username, password, role, full_name, email) ---
+    # --- 1. USERS: (user_id, username, password, role, full_name, email) ---
     cursor.executemany("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?)", [
-        (1, 'farmer1', '123', 'Farmer', 'Farmer1', 'farmer1@gmail.com'),
-        (2, 'merchant1', '123', 'Merchant', 'Merchant1', 'merchant1@gmail.com')
+        (1, 'farmer1', '123', 'Farmer', 'Nguyễn Văn Ruộng', 'farmer1@gmail.com'),
+        (2, 'merchant1', '123', 'Merchant', 'Trần Thị Chợ', 'merchant1@gmail.com')
     ])
 
-    # --- 2. CROPS: (id, name, category, price) ---
+    # --- 2. CROPS: (crop_id, crop_name, category, base_price) ---
     cursor.executemany("INSERT INTO Crops VALUES (?, ?, ?, ?)", [
         (1, 'Lúa Thơm ST25', 'Họ Hòa thảo', 18000),
         (2, 'Đậu Xanh', 'Họ Đậu', 30000),
@@ -28,12 +28,13 @@ def seed_data():
         (5, 'Khoai Lang', 'Củ quả', 20000)
     ])
 
-    # --- 3. FARMING ACTIVITIES: (id, farmer_id, crop_id, farm_name, area, seeds, fert, labor, other, date) ---
-    cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-        (101, 1, 1, 'A1', 1000, 2000000, 1500000, 3000000, 500000, '2025-10-01'),
-        (102, 1, 2, 'A2', 500, 1000000, 800000, 1500000, 200000, '2025-11-15'),
-        (103, 1, 3, 'B1', 300, 500000, 400000, 1000000, 100000, '2026-01-10'),
-        (104, 1, 4, 'B2', 800, 1500000, 1200000, 2000000, 300000, '2026-02-05')
+    # --- 3. FARMING ACTIVITIES: (id, farmer_id, crop_id, farm_name, area, seeds, fert, labor, other, date, status) ---
+    # Lưu ý: Thêm cột status ở cuối để khớp với init_db đã sửa
+    cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+        (101, 1, 1, 'A1', 1000, 2000000, 1500000, 3000000, 500000, '2025-10-01', 'Sẵn sàng bán'),
+        (102, 1, 2, 'A2', 500, 1000000, 800000, 1500000, 200000, '2025-11-15', 'Sẵn sàng bán'),
+        (103, 1, 3, 'B1', 300, 500000, 400000, 1000000, 100000, '2026-01-10', 'Đang trồng'),
+        (104, 1, 4, 'B2', 800, 1500000, 1200000, 2000000, 300000, '2026-02-05', 'Đang trồng')
     ])
 
     # --- 4. ACTIVITY LOG: (id, activity_id, farm_name, type, qty, date, soil) ---
