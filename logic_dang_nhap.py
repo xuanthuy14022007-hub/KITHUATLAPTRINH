@@ -1,5 +1,4 @@
 from database_connector import get_connection
-import sqlite3  #dùng sqlite để kết nối database
 
 #Hàm đăng nhập
 def login(username, password):
@@ -51,4 +50,5 @@ def reset_password(username, new_password):
     conn.close()
 
     return success  #True nếu đổi được, False nếu không có username
+
 
