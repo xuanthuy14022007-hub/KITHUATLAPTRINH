@@ -1,10 +1,9 @@
 from database_connector import get_connection
 
+# --- LẤY DANH SÁCH ---
 def lay_tat_ca_nhat_ky():
-    """Lấy danh sách tất cả nhật ký kèm tên cây trồng từ cơ sở dữ liệu"""
     conn = get_connection()
     cursor = conn.cursor()
-    # Truy vấn kết hợp (JOIN) 3 bảng để lấy thông tin chi tiết
     query = """
         SELECT 
             ActivityLog.log_id, 
@@ -20,48 +19,63 @@ def lay_tat_ca_nhat_ky():
         ORDER BY ActivityLog.log_date DESC
     """
     cursor.execute(query)
-    rows = cursor.fetchall() # Trả về danh sách các dòng dữ liệu
+    rows = cursor.fetchall()
     conn.close()
     return rows
 
-def xem_chi_tiet_nhat_ky(log_id):
-    """Lấy thông tin chi tiết của một dòng nhật ký cụ thể qua ID"""
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM ActivityLog WHERE log_id = ?", (log_id,))
-    row = cursor.fetchone() # Trả về 1 dòng duy nhất hoặc None
-    conn.close()
-    return row
-
-def them_nhat_ky(activity_id, farm_name, action_type, quantity, log_date, soil_status):
-    """Thêm một bản ghi nhật ký canh tác mới vào kho lưu trữ"""
+# --- THÔNG TIN BỔ TRỢ ---
+def lay_thong_tin_vu_mua(activity_id):
     conn = get_connection()
     cursor = conn.cursor()
     query = """
-        INSERT INTO ActivityLog (activity_id, farm_name, action_type, quantity, log_date, soil_status)
-        VALUES (?, ?, ?, ?, ?, ?)
+        SELECT FarmingActivities.farm_name, Crops.crop_name 
+        FROM FarmingActivities
+        JOIN Crops ON FarmingActivities.crop_id = Crops.crop_id
+        WHERE FarmingActivities.activity_id = ?
     """
-    cursor.execute(query, (activity_id, farm_name, action_type, quantity, log_date, soil_status))
-    conn.commit() # Xác nhận lưu dữ liệu xuống file .db
+    cursor.execute(query, (activity_id,))
+    result = cursor.fetchone()
+    conn.close()
+    return result
+
+# --- THÊM NHẬT KÝ (ĐÃ FIX) ---
+def them_nhat_ky(activity_id, action_type, log_date, soil_status):
+    thong_tin = lay_thong_tin_vu_mua(activity_id)
+    if not thong_tin:
+        print("Lỗi: Không tìm thấy vụ mùa!")
+        return
+    
+    ten_thua_dat = thong_tin[0]
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    # Thêm 'quantity' vào query và set mặc định là 0
+    query = """
+        INSERT INTO ActivityLog (activity_id, farm_name, action_type, quantity, log_date, soil_status)
+        VALUES (?, ?, ?, 0, ?, ?)
+    """
+    cursor.execute(query, (activity_id, ten_thua_dat, action_type, log_date, soil_status))
+    conn.commit()
     conn.close()
 
-def sua_nhat_ky(log_id, action_type, quantity, log_date, soil_status):
-    """Cập nhật nội dung của một dòng nhật ký đã tồn tại"""
+# --- SỬA NHẬT KÝ (ĐÃ FIX) ---
+def sua_nhat_ky(log_id, action_type, log_date, soil_status):
     conn = get_connection()
     cursor = conn.cursor()
     query = """
         UPDATE ActivityLog 
-        SET action_type = ?, quantity = ?, log_date = ?, soil_status = ?
+        SET action_type = ?, log_date = ?, soil_status = ?
         WHERE log_id = ?
     """
-    cursor.execute(query, (action_type, quantity, log_date, soil_status, log_id))
-    conn.commit() # Xác nhận thay đổi
+    # Chỉ truyền đúng 4 tham số tương ứng với 4 dấu hỏi
+    cursor.execute(query, (action_type, log_date, soil_status, log_id))
+    conn.commit()
     conn.close()
 
+# --- XÓA NHẬT KÝ ---
 def xoa_nhat_ky(log_id):
-    """Xóa bỏ hoàn toàn một dòng nhật ký khỏi hệ thống"""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM ActivityLog WHERE log_id = ?", (log_id,))
-    conn.commit() # Xác nhận xóa
+    conn.commit()
     conn.close()
