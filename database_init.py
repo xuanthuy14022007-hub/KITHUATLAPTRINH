@@ -92,6 +92,16 @@ def init_db():
         FOREIGN KEY(order_id) REFERENCES Orders(order_id),
         FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
     )''')
+    # --- 7. BẢNG GIỎ HÀNG (BỘ NHỚ TẠM) ---
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS Cart (
+    cart_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    merchant_id INTEGER,
+    activity_id INTEGER, -- Liên kết trực tiếp tới vụ mùa đang bán
+    quantity REAL,
+    FOREIGN KEY(merchant_id) REFERENCES Users(user_id),
+    FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
+)''')
 
     # Lưu thay đổi và đóng kết nối
     conn.commit()
