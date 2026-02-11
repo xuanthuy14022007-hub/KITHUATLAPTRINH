@@ -34,7 +34,6 @@ def init_db():
     )''')
 
     # --- 3. BẢNG VỤ MÙA & CHI PHÍ ---
-    # Đây là nơi lưu thông tin ban đầu khi Thủy bấm "Thêm cây trồng"
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS FarmingActivities (
         activity_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +52,6 @@ def init_db():
     )''')
 
     # --- 4. BẢNG NHẬT KÝ KỸ THUẬT ---
-    # Nơi Thủy cập nhật các hoạt động hàng ngày cho từng cây
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS ActivityLog (
         log_id INTEGER PRIMARY KEY AUTOINCREMENT,
