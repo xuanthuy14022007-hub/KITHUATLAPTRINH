@@ -57,18 +57,55 @@ def them_nhat_ky(activity_id, action_type, log_date, soil_status):
     cursor.execute(query, (activity_id, ten_thua_dat, action_type, log_date, soil_status))
     conn.commit()
     conn.close()
-
-# --- SỬA NHẬT KÝ (ĐÃ FIX) ---
-def sua_nhat_ky(log_id, action_type, log_date, soil_status):
+# --- HÀM NHẬT KÝ 2: DÙNG KHI THU HOẠCH ---
+def ghi_nhan_thu_hoach(activity_id, harvest_quantity, log_date, note):
+    thong_tin = lay_thong_tin_vu_mua(activity_id)
+    if not thong_tin: return
+    ten_thua_dat = thong_tin[0]
+    
     conn = get_connection()
     cursor = conn.cursor()
-    query = """
-        UPDATE ActivityLog 
-        SET action_type = ?, log_date = ?, soil_status = ?
-        WHERE log_id = ?
-    """
-    # Chỉ truyền đúng 4 tham số tương ứng với 4 dấu hỏi
-    cursor.execute(query, (action_type, log_date, soil_status, log_id))
+    try:
+        # A. Thêm dòng 'Thu hoạch' vào nhật ký
+        query_log = """
+            INSERT INTO ActivityLog (activity_id, farm_name, action_type, quantity, log_date, soil_status)
+            VALUES (?, ?, 'Thu hoạch', ?, ?, ?)
+        """
+        cursor.execute(query_log, (activity_id, ten_thua_dat, harvest_quantity, log_date, note))
+        
+        # B. Tự động đổi trạng thái vụ mùa sang 'Sẵn sàng bán'
+        query_status = "UPDATE FarmingActivities SET status = 'Sẵn sàng bán' WHERE activity_id = ?"
+        cursor.execute(query_status, (activity_id,))
+        
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi: {e}")
+    finally:
+        conn.close()
+
+# --- SỬA NHẬT KÝ (ĐÃ FIX) ---
+def sua_nhat_ky(log_id, action_type, log_date, soil_status, quantity=None):
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    if quantity is None:
+        # Nếu không truyền quantity, chỉ cập nhật các trường còn lại
+        query = """
+            UPDATE ActivityLog 
+            SET action_type = ?, log_date = ?, soil_status = ?
+            WHERE log_id = ?
+        """
+        cursor.execute(query, (action_type, log_date, soil_status, log_id))
+    else:
+        # Nếu có truyền (khi sửa dòng thu hoạch), cập nhật tất cả
+        query = """
+            UPDATE ActivityLog 
+            SET action_type = ?, quantity = ?, log_date = ?, soil_status = ?
+            WHERE log_id = ?
+        """
+        cursor.execute(query, (action_type, quantity, log_date, soil_status, log_id))
+    
     conn.commit()
     conn.close()
 
