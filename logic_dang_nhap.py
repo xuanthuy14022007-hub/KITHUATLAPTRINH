@@ -1,9 +1,5 @@
+from database_connector import get_connection
 import sqlite3  #dùng sqlite để kết nối database
-
-DB_NAME = "nong_oi.db"
-
-def get_connection():
-    return sqlite3.connect(DB_NAME)  # tạo kết nối tới nong_oi.db
 
 #Hàm đăng nhập
 def login(username, password):
@@ -14,7 +10,7 @@ def login(username, password):
         "SELECT user_id, username, role, full_name, email FROM Users WHERE username = ? AND password = ?",  #tìm user hợp lệ
         (username, password)  #truyền username và password
     )
-    user = cursor.fetchone()  #lấy 1 bản ghi phù hợp
+    user = cursor.fetchone()  #lấy 1 dòng dữ liệu
 
     conn.close()  #đóng kết nối database
     return user  #có user thì trả tuple, không có thì None
