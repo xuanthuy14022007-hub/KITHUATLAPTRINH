@@ -21,6 +21,7 @@ def init_db():
         password TEXT NOT NULL,
         role TEXT NOT NULL,        
         full_name TEXT
+        email TEXT UNIQUE
     )''')
 
     # --- 2. BẢNG DANH MỤC CÂY TRỒNG ---
