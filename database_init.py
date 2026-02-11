@@ -20,7 +20,7 @@ def init_db():
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
         role TEXT NOT NULL,        
-        full_name TEXT
+        full_name TEXT,
         email TEXT UNIQUE
     )''')
 
