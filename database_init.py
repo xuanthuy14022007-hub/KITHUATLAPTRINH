@@ -47,6 +47,7 @@ def init_db():
         cost_labor REAL DEFAULT 0,
         other_costs REAL DEFAULT 0,
         start_date TEXT,           -- Ngày bắt đầu vụ (YYYY-MM-DD)
+        status TEXT DEFAULT 'Đang trồng', -- Dấu hiệu quản lý vòng đời
         FOREIGN KEY(farmer_id) REFERENCES Users(user_id),
         FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
     )''')
