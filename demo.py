@@ -30,11 +30,11 @@ def seed_data():
 
     # --- 3. FARMING ACTIVITIES: (id, farmer_id, crop_id, farm_name, area, seeds, fert, labor, other, date, status) ---
     # Lưu ý: Thêm cột status ở cuối để khớp với init_db đã sửa
-    cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
-        (101, 1, 1, 'A1', 1000, 2000000, 1500000, 3000000, 500000, '2025-10-01', 'Sẵn sàng bán'),
-        (102, 1, 2, 'A2', 500, 1000000, 800000, 1500000, 200000, '2025-11-15', 'Sẵn sàng bán'),
-        (103, 1, 3, 'B1', 300, 500000, 400000, 1000000, 100000, '2026-01-10', 'Đang trồng'),
-        (104, 1, 4, 'B2', 800, 1500000, 1200000, 2000000, 300000, '2026-02-05', 'Đang trồng')
+    cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?)", [
+        (101, 1, 1, 'A1', 1000, '2025-10-01', 'Sẵn sàng bán'),
+        (102, 1, 2, 'A2', 500, '2025-11-15', 'Sẵn sàng bán'),
+        (103, 1, 3, 'B1', 300, '2026-01-10', 'Đang trồng'),
+        (104, 1, 4, 'B2', 800, 300000, '2026-02-05', 'Đang trồng')
     ])
 
     # --- 4. ACTIVITY LOG: (id, activity_id, farm_name, type, qty, date, soil) ---
