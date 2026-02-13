@@ -96,6 +96,15 @@ CREATE TABLE IF NOT EXISTS Cart (
     FOREIGN KEY(merchant_id) REFERENCES Users(user_id),
     FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
 )''')
+    # --- 8. BẢNG CHI PHÍ (BỘ NHỚ TẠM) ---
+cursor.excecute('''
+CREATE TABLE CostCart (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    farmer_id INTEGER,
+    cost_type TEXT,    -- Sẽ lưu 1 trong 4 loại: 'Hạt giống', 'Phân bón', 'Nhân công', 'Chi phí khác'
+    amount REAL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)''')
 
     # Lưu thay đổi và đóng kết nối
     conn.commit()
