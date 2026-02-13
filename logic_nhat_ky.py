@@ -1,24 +1,27 @@
 from database_connector import get_connection
 
 # --- LẤY DANH SÁCH ---
-def lay_tat_ca_nhat_ky():
+def lay_nhat_ky_theo_mua_vu(activity_id):
+    """
+    Input: activity_id (Mã của mùa vụ/loại cây được chọn)
+    Output: Danh sách các nhật ký gần đây của riêng mùa vụ đó.
+    """
     conn = get_connection()
     cursor = conn.cursor()
+    
     query = """
         SELECT 
-            ActivityLog.log_id, 
-            ActivityLog.farm_name, 
-            Crops.crop_name, 
-            ActivityLog.action_type, 
-            ActivityLog.quantity, 
-            ActivityLog.log_date, 
-            ActivityLog.soil_status
+            log_id, 
+            action_type, 
+            quantity, 
+            log_date, 
+            soil_status
         FROM ActivityLog
-        JOIN FarmingActivities ON ActivityLog.activity_id = FarmingActivities.activity_id
-        JOIN Crops ON FarmingActivities.crop_id = Crops.crop_id
-        ORDER BY ActivityLog.log_date DESC
+        WHERE activity_id = ?
+        ORDER BY log_date DESC
+        LIMIT 3 -- Chỉ lấy 3 nhật ký gần nhất để hiện màn hình chính
     """
-    cursor.execute(query)
+    cursor.execute(query, (activity_id,))
     rows = cursor.fetchall()
     conn.close()
     return rows
@@ -52,7 +55,7 @@ def them_nhat_ky(activity_id, action_type, log_date, soil_status):
     # Thêm 'quantity' vào query và set mặc định là 0
     query = """
         INSERT INTO ActivityLog (activity_id, farm_name, action_type, quantity, log_date, soil_status)
-        VALUES (?, ?, ?, 0, ?, ?)
+        VALUES (?, ?, ?, NULL, ?, ?)
     """
     cursor.execute(query, (activity_id, ten_thua_dat, action_type, log_date, soil_status))
     conn.commit()
@@ -88,26 +91,29 @@ def ghi_nhan_thu_hoach(activity_id, harvest_quantity, log_date, note):
 def sua_nhat_ky(log_id, action_type, log_date, soil_status, quantity=None):
     conn = get_connection()
     cursor = conn.cursor()
-    
-    if quantity is None:
-        # Nếu không truyền quantity, chỉ cập nhật các trường còn lại
-        query = """
-            UPDATE ActivityLog 
-            SET action_type = ?, log_date = ?, soil_status = ?
-            WHERE log_id = ?
-        """
-        cursor.execute(query, (action_type, log_date, soil_status, log_id))
-    else:
-        # Nếu có truyền (khi sửa dòng thu hoạch), cập nhật tất cả
-        query = """
-            UPDATE ActivityLog 
-            SET action_type = ?, quantity = ?, log_date = ?, soil_status = ?
-            WHERE log_id = ?
-        """
-        cursor.execute(query, (action_type, quantity, log_date, soil_status, log_id))
-    
-    conn.commit()
-    conn.close()
+    try:
+        if action_type == 'Thu hoạch' and quantity is not None:
+            # Cập nhật có kèm sản lượng
+            query = """
+                UPDATE ActivityLog 
+                SET action_type = ?, quantity = ?, log_date = ?, soil_status = ?
+                WHERE log_id = ?
+            """
+            cursor.execute(query, (action_type, quantity, log_date, soil_status, log_id))
+        else:
+            # Cập nhật thông thường, ép quantity về NULL để đảm bảo tính đồng bộ
+            query = """
+                UPDATE ActivityLog 
+                SET action_type = ?, quantity = NULL, log_date = ?, soil_status = ?
+                WHERE log_id = ?
+            """
+            cursor.execute(query, (action_type, log_date, soil_status, log_id))
+        conn.commit()
+    except Exception as e:
+        print(f"Lỗi khi sửa: {e}")
+        conn.rollback()
+    finally:
+        conn.close()
 
 # --- XÓA NHẬT KÝ ---
 def xoa_nhat_ky(log_id):
