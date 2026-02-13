@@ -4,10 +4,17 @@ from database_connector import get_connection
 # 1. DÀNH CHO MERCHANT (THƯƠNG LÁI) - ĐI CHỢ & MUA HÀNG
 # =================================================================
 
-def lay_danh_sach_cho_nong_san():
-    """Hiển thị các lô hàng có trạng thái 'Sẵn sàng bán'"""
+def lay_danh_sach_nong_san(tu_khoa=""):
+    """
+    Hàm đa năng: 
+    - Nếu không truyền tu_khoa: Lấy tất cả (phục vụ trang chủ)
+    - Nếu có tu_khoa: Tìm kiếm theo yêu cầu
+    """
     conn = get_connection()
     cursor = conn.cursor()
+    
+    search_term = f"%{tu_khoa}%"
+    
     query = """
         SELECT FarmingActivities.activity_id, Users.full_name, Crops.crop_name, 
                ActivityLog.quantity, Crops.base_price, FarmingActivities.farm_name
@@ -15,9 +22,12 @@ def lay_danh_sach_cho_nong_san():
         JOIN Users ON FarmingActivities.farmer_id = Users.user_id
         JOIN Crops ON FarmingActivities.crop_id = Crops.crop_id
         JOIN ActivityLog ON FarmingActivities.activity_id = ActivityLog.activity_id
-        WHERE FarmingActivities.status = 'Sẵn sàng bán' AND ActivityLog.action_type = 'Thu hoạch'
+        WHERE FarmingActivities.status = 'Sẵn sàng bán' 
+        AND ActivityLog.action_type = 'Thu hoạch'
+        AND (Crops.crop_name LIKE ? OR Users.full_name LIKE ?)
     """
-    cursor.execute(query)
+    
+    cursor.execute(query, (search_term, search_term))
     rows = cursor.fetchall()
     conn.close()
     return rows
