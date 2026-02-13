@@ -6,7 +6,7 @@ def lay_thong_tin_nguoi_dung(user_id):
     cursor = conn.cursor()       # tạo con trỏ SQL
 
     cursor.execute(
-        "SELECT user_id, username, role, full_name FROM Users WHERE user_id = ?",
+        "SELECT user_id, username, role, full_name, email FROM Users WHERE user_id = ?",
         (user_id,)               # truyền user_id vào câu lệnh
     )
 
@@ -24,10 +24,10 @@ def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name):
     cursor.execute(
         """
         UPDATE Users
-        SET username = ?, role = ?, full_name = ?
+        SET username = ?, role = ?, full_name = ?,  email = ?
         WHERE user_id = ?
         """,
-        (username, role, full_name, user_id)  # truyền dữ liệu mới vào
+        (username, role, full_name, email, user_id)  # truyền dữ liệu mới vào
     )
 
     conn.commit()                # lưu thay đổi xuống database
