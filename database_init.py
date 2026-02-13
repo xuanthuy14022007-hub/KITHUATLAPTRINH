@@ -41,10 +41,6 @@ def init_db():
         crop_id INTEGER,
         farm_name TEXT,            -- Tên thửa đất người dùng tự đặt
         area REAL,                 -- Diện tích trồng (m2)
-        cost_seeds REAL DEFAULT 0,
-        cost_fertilizer REAL DEFAULT 0,
-        cost_labor REAL DEFAULT 0,
-        other_costs REAL DEFAULT 0,
         start_date TEXT,           -- Ngày bắt đầu vụ (YYYY-MM-DD)
         status TEXT DEFAULT 'Đang trồng', -- Dấu hiệu quản lý vòng đời
         FOREIGN KEY(farmer_id) REFERENCES Users(user_id),
