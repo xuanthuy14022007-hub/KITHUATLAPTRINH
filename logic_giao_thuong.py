@@ -103,11 +103,41 @@ def lay_danh_sach_don_hang_den(farmer_id):
     rows = cursor.fetchall()
     conn.close()
     return rows
-
+def lay_items_trong_don_hang(cursor, order_id):
+    """Lấy danh sách sản phẩm và activity_id tương ứng để trừ/hoàn kho"""
+    query = """
+        SELECT OI.quantity, FA.activity_id 
+        FROM OrderItems OI
+        JOIN Orders O ON OI.order_id = O.order_id
+        JOIN FarmingActivities FA ON O.farmer_id = FA.farmer_id AND OI.crop_id = FA.crop_id
+        WHERE O.order_id = ? AND FA.status = 'Sẵn sàng bán'
+    """
+    cursor.execute(query, (order_id,))
+    return cursor.fetchall()
 def cap_nhat_trang_thai_don_hang(order_id, new_status):
-    """Xác nhận, Giao hàng, Hoàn thành hoặc Hủy đơn"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE Orders SET status = ? WHERE order_id = ?", (new_status, order_id))
-    conn.commit()
-    conn.close()
+    try:
+        # TRƯỜNG HỢP 1: XÁC NHẬN -> TRỪ KHO
+        if new_status == 'Xác nhận':
+            items = lay_items_trong_don_hang(cursor, order_id)
+            for qty, act_id in items:
+                cursor.execute("UPDATE ActivityLog SET quantity = quantity - ? WHERE activity_id = ? AND action_type = 'Thu hoạch'", (qty, act_id))
+
+        # TRƯỜNG HỢP 2: HUỶ ĐƠN -> HOÀN KHO (Nếu trước đó đã xác nhận)
+        elif new_status == 'Huỷ đơn':
+            # Thuỳ có thể kiểm tra nếu đơn cũ đang là 'Xác nhận' hoặc 'Giao hàng' thì mới hoàn kho
+            items = lay_items_trong_don_hang(cursor, order_id)
+            for qty, act_id in items:
+                cursor.execute("UPDATE ActivityLog SET quantity = quantity + ? WHERE activity_id = ? AND action_type = 'Thu hoạch'", (qty, act_id))
+
+        # TRƯỜNG HỢP 3: CÁC TRẠNG THÁI KHÁC (Giao hàng, Hoàn thành)
+        # Không làm gì với kho cả, chỉ cập nhật status ở dòng dưới cùng
+        
+        cursor.execute("UPDATE Orders SET status = ? WHERE order_id = ?", (new_status, order_id))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(f"Lỗi: {e}")
+    finally:
+        conn.close()
