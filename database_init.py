@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS Cart (
     FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
 )''')
     # --- 8. BẢNG CHI PHÍ (BỘ NHỚ TẠM) ---
-cursor.excecute('''
+cursor.execute('''
 CREATE TABLE CostCart (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     farmer_id INTEGER,
