@@ -6,7 +6,7 @@ from openpyxl import Workbook
 from datetime import datetime
 from logic_tinh_toan import lay_ket_qua_tai_chinh_tong_quat, tinh_co_cau_tai_chinh_theo_doanh_thu
 
-# Đăng ký font Unicode (bạn cần có file Roboto-Regular.ttf trong cùng thư mục)
+# Đăng ký font Unicode 
 pdfmetrics.registerFont(TTFont('Roboto', 'Roboto.ttf'))
 
 def xuat_bao_cao_tai_chinh(farmer_id, file_type="pdf"):
@@ -72,3 +72,4 @@ def xuat_bao_cao_tai_chinh(farmer_id, file_type="pdf"):
 if __name__ == "__main__":
     # Ví dụ: xuất báo cáo cho farmer_id = 1
     xuat_bao_cao_tai_chinh(1, file_type="pdf")   # hoặc "xlsx"
+
