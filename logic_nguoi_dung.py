@@ -17,7 +17,7 @@ def lay_thong_tin_nguoi_dung(user_id):
     return user                  # trả về thông tin người dùng
 
 # Hàm cập nhật thông tin người dùng
-def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name):
+def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email):
     conn = get_connection()      # mở kết nối database
     cursor = conn.cursor()       # tạo con trỏ SQL
 
@@ -37,3 +37,4 @@ def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name):
     conn.close()                 # đóng kết nối
 
     return success               # True nếu cập nhật thành công, False nếu không
+
