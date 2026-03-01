@@ -129,6 +129,29 @@ def lay_danh_sach_don_hang_den(farmer_id):
     conn.close()
     return rows
 
+def lay_chi_tiet_don_hang(order_id):
+    """
+    Lấy chi tiết các mặt hàng trong một đơn hàng cụ thể.
+    Input: order_id (int) - ID của đơn hàng cần xem.
+    Output: Danh sách các tuple, mỗi tuple chứa:
+        (crop_name, quantity, unit_price, thanh_tien, farm_name)
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT c.crop_name, oi.quantity, oi.unit_price, 
+               (oi.quantity * oi.unit_price) as thanh_tien,
+               fa.farm_name
+        FROM OrderItems oi
+        JOIN Crops c ON oi.crop_id = c.crop_id
+        JOIN FarmingActivities fa ON oi.activity_id = fa.activity_id
+        WHERE oi.order_id = ?
+    """
+    cursor.execute(query, (order_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
 def lay_items_trong_don_hang(cursor, order_id):
     """
     Lấy danh sách các mặt hàng (gồm số lượng và activity_id) thuộc một đơn hàng.
