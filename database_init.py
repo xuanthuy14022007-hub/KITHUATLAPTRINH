@@ -86,6 +86,7 @@ def init_db():
         unit_price REAL,
         FOREIGN KEY(order_id) REFERENCES Orders(order_id),
         FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
+        FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
     )''')
     # --- 7. BẢNG GIỎ HÀNG (BỘ NHỚ TẠM) ---
 cursor.execute('''
