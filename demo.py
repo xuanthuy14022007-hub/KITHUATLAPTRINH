@@ -28,7 +28,7 @@ def seed_data():
         (5, 'Khoai Lang', 'Củ quả', 20000)
     ])
 
-    # --- 3. FARMING ACTIVITIES: (id, farmer_id, crop_id, farm_name, area, seeds, fert, labor, other, date, status) ---
+    # --- 3. FARMING ACTIVITIES: (id, farmer_id, crop_id, farm_name, area, date, status) ---
     # Lưu ý: Thêm cột status ở cuối để khớp với init_db đã sửa
     cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?)", [
         (101, 1, 1, 'A1', 1000, '2025-10-01', 'Sẵn sàng bán'),
