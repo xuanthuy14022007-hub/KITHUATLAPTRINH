@@ -81,6 +81,7 @@ def init_db():
         item_id INTEGER PRIMARY KEY AUTOINCREMENT,
         order_id INTEGER,
         crop_id INTEGER,
+        activity_id INTEGER,
         quantity REAL,
         unit_price REAL,
         FOREIGN KEY(order_id) REFERENCES Orders(order_id),
