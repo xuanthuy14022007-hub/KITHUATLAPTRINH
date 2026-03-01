@@ -55,9 +55,9 @@ def them_nhat_ky(activity_id, action_type, log_date, soil_status):
     # Thêm 'quantity' vào query và set mặc định là 0
     query = """
         INSERT INTO ActivityLog (activity_id, farm_name, action_type, quantity, log_date, soil_status)
-        VALUES (?, ?, ?, NULL, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     """
-    cursor.execute(query, (activity_id, ten_thua_dat, action_type, log_date, soil_status))
+    cursor.execute(query, (activity_id, ten_thua_dat, action_type, None, log_date, soil_status))
     conn.commit()
     conn.close()
 # --- HÀM NHẬT KÝ 2: DÙNG KHI THU HOẠCH ---
