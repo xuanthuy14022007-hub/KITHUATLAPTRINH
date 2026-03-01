@@ -50,16 +50,12 @@ def seed_data():
     cursor.executemany("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?)", [
         (501, 2, 1, 'Hoàn thành', 27000000, '2026-01-25'),
         (502, 2, 1, 'Hoàn thành', 18000000, '2026-02-02'),
-        (503, 2, 1, 'Chờ xác nhận', 4500000, '2026-02-09'),
-        (504, 2, 1, 'Hoàn thành', 12000000, '2025-12-15')
     ])
 
     # --- 6. ORDER ITEMS: (item_id, order_id, crop_id, activity_id, quantity, unit_price) ---
     cursor.executemany("INSERT INTO OrderItems VALUES (?, ?, ?, ?, ?, ?)", [
         (1, 501, 1, 101, 1500, 18000),
         (2, 502, 2, 102, 600, 30000),
-        (3, 503, 3, 103, 150, 30000),
-        (4, 504, 4, 104, 800, 15000)
     ])
 
     conn.commit()
