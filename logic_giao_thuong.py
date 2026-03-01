@@ -31,26 +31,46 @@ def lay_danh_sach_nong_san(tu_khoa=""):
     return rows                       # Trả về danh sách tuple
 
 def them_vao_gio_hang(merchant_id, activity_id, quantity):
-    """
-    Thêm sản phẩm vào giỏ hàng của merchant.
-    Nếu sản phẩm (activity_id) đã có trong giỏ, cộng dồn số lượng.
-    """
     conn = get_connection()
     cursor = conn.cursor()
-    # Kiểm tra xem activity_id đã tồn tại trong giỏ của merchant chưa
-    cursor.execute("SELECT cart_id, quantity FROM Cart WHERE merchant_id = ? AND activity_id = ?", 
+    
+    # Kiểm tra số lượng tồn kho hiện tại
+    cursor.execute("""
+        SELECT quantity FROM ActivityLog 
+        WHERE activity_id = ? AND action_type = 'Thu hoạch'
+    """, (activity_id,))
+    row = cursor.fetchone()
+    if not row or row[0] is None:
+        print("Lỗi: Không tìm thấy thông tin thu hoạch cho vụ này!")
+        conn.close()
+        return False
+    
+    ton_kho = row[0]
+    
+    # Tính tổng số lượng đã có trong giỏ của merchant cho vụ này
+    cursor.execute("SELECT SUM(quantity) FROM Cart WHERE merchant_id = ? AND activity_id = ?", 
+                   (merchant_id, activity_id))
+    da_co = cursor.fetchone()[0] or 0
+    
+    if da_co + quantity > ton_kho:
+        print(f"Lỗi: Chỉ còn {ton_kho} kg, bạn đã có {da_co} kg trong giỏ, không thể thêm {quantity} kg.")
+        conn.close()
+        return False
+    
+    # Nếu hợp lệ, thêm vào giỏ
+    cursor.execute("SELECT cart_id FROM Cart WHERE merchant_id = ? AND activity_id = ?", 
                    (merchant_id, activity_id))
     item = cursor.fetchone()
     if item:
-        # Nếu có, cập nhật tăng số lượng
         cursor.execute("UPDATE Cart SET quantity = quantity + ? WHERE cart_id = ?", 
                        (quantity, item[0]))
     else:
-        # Nếu chưa, thêm mới vào giỏ
         cursor.execute("INSERT INTO Cart (merchant_id, activity_id, quantity) VALUES (?, ?, ?)", 
                        (merchant_id, activity_id, quantity))
-    conn.commit()   # Lưu thay đổi
-    conn.close()    # Đóng kết nối
+    
+    conn.commit()
+    conn.close()
+    return True
 
 def thanh_toan_gio_hang(merchant_id, order_date):
     """
