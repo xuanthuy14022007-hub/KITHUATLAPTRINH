@@ -126,7 +126,7 @@ def xuat_bao_cao(farmer_id):
         c.drawImage(ImageReader(img1), CENTER_X, y_img1, width=CHART_SIZE, height=CHART_SIZE, preserveAspectRatio=True)
 
     # Biểu đồ 2: Tiếp nối biểu đồ 1
-    img2 = tao_anh_bieu_do(ti_le_sp, "Tỉ lệ đơn hàng theo sản phẩm (%)")
+    img2 = tao_anh_bieu_do(ti_le_sp, "Tỉ lệ đơn hàng (%)")
     if img2:
         y_img2 = y_img1 - CHART_SIZE + 20
         c.drawImage(ImageReader(img2), CENTER_X, y_img2, width=CHART_SIZE, height=CHART_SIZE, preserveAspectRatio=True)
@@ -142,3 +142,4 @@ def xuat_bao_cao(farmer_id):
 
 if __name__ == "__main__":
     xuat_bao_cao(1)
+
