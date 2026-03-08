@@ -5,7 +5,7 @@ def seed_data():
     cursor = conn.cursor()
     cursor.execute("PRAGMA foreign_keys = ON;")
 
-    # Xóa dữ liệu cũ theo thứ tự ngược
+    # Xóa dữ liệu cũ
     cursor.execute("DELETE FROM OrderItems")
     cursor.execute("DELETE FROM Orders")
     cursor.execute("DELETE FROM ActivityLog")
@@ -13,13 +13,13 @@ def seed_data():
     cursor.execute("DELETE FROM Crops")
     cursor.execute("DELETE FROM Users")
 
-    # --- 1. USERS: (user_id, username, password, role, full_name, email) ---
-    cursor.executemany("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?)", [
-        (1, 'farmer1', '123', 'Farmer', 'Nguyễn Văn Ruộng', 'farmer1@gmail.com'),
-        (2, 'merchant1', '123', 'Merchant', 'Trần Thị Chợ', 'merchant1@gmail.com')
+    # --- USERS: thêm cột address ---
+    cursor.executemany("INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?)", [
+        (1, 'farmer1', '123', 'Farmer', 'Nguyễn Văn Ruộng', 'farmer1@gmail.com', 'Thôn 1, Xã A, Huyện B, Tỉnh C'),
+        (2, 'merchant1', '123', 'Merchant', 'Trần Thị Chợ', 'merchant1@gmail.com', 'Số 123, Đường X, Phường Y, Quận Z, Thành phố H')
     ])
 
-    # --- 2. CROPS: (crop_id, crop_name, category, base_price) ---
+    # --- CROPS ---
     cursor.executemany("INSERT INTO Crops VALUES (?, ?, ?, ?)", [
         (1, 'Lúa Thơm ST25', 'Họ Hòa thảo', 18000),
         (2, 'Đậu Xanh', 'Họ Đậu', 30000),
@@ -28,7 +28,7 @@ def seed_data():
         (5, 'Khoai Lang', 'Củ quả', 20000)
     ])
 
-    # --- 3. FARMING ACTIVITIES: (activity_id, farmer_id, crop_id, farm_name, area, start_date, status) ---
+    # --- FARMING ACTIVITIES ---
     cursor.executemany("INSERT INTO FarmingActivities VALUES (?, ?, ?, ?, ?, ?, ?)", [
         (101, 1, 1, 'A1', 1000, '2025-10-01', 'Sẵn sàng bán'),
         (102, 1, 2, 'A2', 500, '2025-11-15', 'Sẵn sàng bán'),
@@ -36,7 +36,7 @@ def seed_data():
         (104, 1, 4, 'B2', 800, '2026-02-05', 'Đang trồng')
     ])
 
-    # --- 4. ACTIVITY LOG: (log_id, activity_id, farm_name, action_type, quantity, log_date, soil_status) ---
+    # --- ACTIVITY LOG ---
     cursor.executemany("INSERT INTO ActivityLog VALUES (?, ?, ?, ?, ?, ?, ?)", [
         (1, 101, 'A1', 'Gieo hạt', 0, '2025-10-02', 'Đất đủ ẩm'),
         (2, 101, 'A1', 'Bón phân', 0, '2025-11-10', 'Cây xanh tốt'),
@@ -46,13 +46,13 @@ def seed_data():
         (6, 104, 'B2', 'Gieo hạt', 0, '2026-02-06', 'Đất bình thường')
     ])
 
-    # --- 5. ORDERS: (order_id, merchant_id, farmer_id, status, total_amount, order_date) ---
+    # --- ORDERS ---
     cursor.executemany("INSERT INTO Orders VALUES (?, ?, ?, ?, ?, ?)", [
         (501, 2, 1, 'Hoàn thành', 27000000, '2026-01-25'),
         (502, 2, 1, 'Hoàn thành', 18000000, '2026-02-02'),
     ])
 
-    # --- 6. ORDER ITEMS: (item_id, order_id, crop_id, activity_id, quantity, unit_price) ---
+    # --- ORDER ITEMS ---
     cursor.executemany("INSERT INTO OrderItems VALUES (?, ?, ?, ?, ?, ?)", [
         (1, 501, 1, 101, 1500, 18000),
         (2, 502, 2, 102, 600, 30000),
