@@ -8,6 +8,8 @@ def seed_data():
     # Xóa dữ liệu cũ
     cursor.execute("DELETE FROM OrderItems")
     cursor.execute("DELETE FROM Orders")
+    cursor.execute("DELETE FROM Cart")        
+    cursor.execute("DELETE FROM CostCart")
     cursor.execute("DELETE FROM ActivityLog")
     cursor.execute("DELETE FROM FarmingActivities")
     cursor.execute("DELETE FROM Crops")
