@@ -9,9 +9,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Table, TableStyle
-
-# --- IMPORT LOGIC CỦA BẠN ---
-from logic_tinh_toan import (
+from logic_tinh_toan2 import (
     lay_ket_qua_tai_chinh_tong_quat,
     tinh_co_cau_tai_chinh_theo_doanh_thu,
     lay_ti_le_don_hang
@@ -30,11 +28,7 @@ except:
 def tao_anh_bieu_do(data_dict, title):
     if not data_dict or sum(data_dict.values()) <= 0: return None
 
-    # 1. Khởi tạo Figure hình vuông cố định (5x5 inch)
     fig = plt.figure(figsize=(5, 5))
-    # 2. Ép lề (margin) thủ công, chặt chẽ cho trục (axes)
-    # [left, bottom, width, height] - Giá trị từ 0 đến 1
-    # Mình chừa lề trên (0.85) cho tiêu đề, lề dưới (0.1) cho nhãn
     ax = fig.add_axes([0.15, 0.1, 0.75, 0.75])
 
     labels, values = list(data_dict.keys()), list(data_dict.values())
@@ -43,7 +37,6 @@ def tao_anh_bieu_do(data_dict, title):
 
     def my_pct(pct): return ('%1.0f%%' % pct) if pct > 0 else ''
 
-    # 3. Ép bán kính radius=1 để lõi hình tròn bằng nhau chặn chặn
     ax.pie(values, labels=display_labels, autopct=my_pct, startangle=140,
            colors=colors_theme, pctdistance=0.75, radius=1,
            wedgeprops={'edgecolor': 'white', 'linewidth': 1.5})
@@ -51,11 +44,8 @@ def tao_anh_bieu_do(data_dict, title):
     ax.set_title(title, fontsize=14, fontweight='bold', pad=30)
     ax.axis('equal')
 
-    # 4. KHÔNG DÙNG tight_layout() hoặc bbox_inches='tight' nữa!
-    # Vì chúng sẽ tự tính lại lề dựa trên độ dài chữ làm lệch hình.
-
     buf = io.BytesIO()
-    # Chỉ lưu cái vùng figure mình đã ép lề cố định
+    
     plt.savefig(buf, format='png', dpi=120, transparent=True)
     plt.close(fig)
     buf.seek(0)
@@ -90,7 +80,7 @@ def xuat_bao_cao(farmer_id):
     c.setFont(F_REG, 11)
     c.drawString(70, H - 160, f"Doanh thu: {stats['doanh_thu']:,} VND  |  Chi phí: {stats['chi_phi']:,} VND")
 
-    # --- Danh sách Chi phí (Bảng - Fix lỗi font) ---
+    # --- Danh sách Chi phí ---
     c.setFont(F_BOLD, 12)
     c.drawString(50, H - 200, "CHI TIẾT CHI PHÍ SẢN XUẤT:")
 
@@ -100,7 +90,6 @@ def xuat_bao_cao(farmer_id):
             tien = int((v / 100) * stats['doanh_thu'])
             data_table.append([k, f"{tien:,}"])
 
-    # Tính toán vị trí bảng để không đè biểu đồ
     table = Table(data_table, colWidths=[200, 150])
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.honeydew),
@@ -115,17 +104,17 @@ def xuat_bao_cao(farmer_id):
     y_table = H - 215 - table_h
     table.drawOn(c, 50, y_table)
 
-    # --- HAI BIỂU ĐỒ (Căn chỉnh tọa độ tự động) ---
+    # --- HAI BIỂU ĐỒ ---
     CHART_SIZE = 240
     CENTER_X = (W - CHART_SIZE) / 2
 
-    # Biểu đồ 1: Cách bảng một khoảng an toàn
+    # Biểu đồ 1
     img1 = tao_anh_bieu_do(co_cau_pct, "Cơ cấu tài chính (%)")
     if img1:
         y_img1 = y_table - CHART_SIZE - 10
         c.drawImage(ImageReader(img1), CENTER_X, y_img1, width=CHART_SIZE, height=CHART_SIZE, preserveAspectRatio=True)
 
-    # Biểu đồ 2: Tiếp nối biểu đồ 1
+    # Biểu đồ 2
     img2 = tao_anh_bieu_do(ti_le_sp, "Tỉ lệ đơn hàng (%)")
     if img2:
         y_img2 = y_img1 - CHART_SIZE + 20
@@ -142,4 +131,3 @@ def xuat_bao_cao(farmer_id):
 
 if __name__ == "__main__":
     xuat_bao_cao(1)
-
