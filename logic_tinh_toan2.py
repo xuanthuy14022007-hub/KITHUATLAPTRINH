@@ -1,4 +1,32 @@
 from database_connector import get_connection
+
+def them_chi_phi(farmer_id, cost_type, amount):
+    """
+    Thêm một khoản chi phí vào bảng CostCart.
+    
+    Args:
+        farmer_id (int): ID của nông dân.
+        cost_type (str): Loại chi phí ('Hạt giống', 'Phân bón', 'Nhân công', 'Chi phí khác').
+        amount (float): Số tiền (phải >= 0).
+    
+    Returns:
+        bool: True nếu thêm thành công, False nếu có lỗi.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            "INSERT INTO CostCart (farmer_id, cost_type, amount) VALUES (?, ?, ?)",
+            (farmer_id, cost_type, amount)
+        )
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Lỗi thêm chi phí: {e}")
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
 def lay_ket_qua_tai_chinh_tong_quat(farmer_id):
     """
     Hàm trả về Doanh thu (từ đơn hàng) và Lợi nhuận (Doanh thu - Tổng chi phí tạm)
@@ -124,3 +152,4 @@ def lay_ti_le_don_hang(farmer_id):
         return None
     finally:
         conn.close()
+
