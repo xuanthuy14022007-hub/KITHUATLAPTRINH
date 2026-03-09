@@ -66,7 +66,7 @@ def xuat_bao_cao(farmer_id):
     c.rect(0, H - 70, W, 70, fill=1, stroke=0)
     c.setFillColor(colors.white)
     c.setFont(F_BOLD, 20)
-    c.drawString(50, H - 45, "BÁO CÁO TÌHH HÌNH TÀI CHÍNH NÔNG ƠI!")
+    c.drawString(50, H - 45, "BÁO CÁO TÌNH HÌNH TÀI CHÍNH NÔNG ƠI!")
 
     # --- Khối Tài Chính ---
     c.setFillColor(colors.black)
@@ -131,3 +131,4 @@ def xuat_bao_cao(farmer_id):
 
 if __name__ == "__main__":
     xuat_bao_cao(1)
+
