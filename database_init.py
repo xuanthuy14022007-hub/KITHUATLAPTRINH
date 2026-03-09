@@ -40,7 +40,7 @@ def init_db():
         FOREIGN KEY(crop_id) REFERENCES Crops(crop_id)
     )''')
 
-    # 4. NHẬT KÝ KỸ THUẬT
+    # 4. NHẬT KÝ KỸ CHĂM SÓC
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS ActivityLog (
         log_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,7 +91,7 @@ def init_db():
         FOREIGN KEY(activity_id) REFERENCES FarmingActivities(activity_id)
     )''')
 
-    # 8. CHI PHÍ (Đã sửa lỗi IF NOT EXISTS)
+    # 8. CHI PHÍ 
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS CostCart (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,4 +107,5 @@ def init_db():
     print(">>> Hệ thống Database Nông Ơi! đã sẵn sàng.")
 
 if __name__ == "__main__":
+
     init_db()
