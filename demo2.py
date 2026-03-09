@@ -5,14 +5,14 @@ def seed_data():
     cursor = conn.cursor()
     cursor.execute("PRAGMA foreign_keys = ON;")
 
-    # Xóa dữ liệu cũ theo thứ tự để tránh lỗi khóa ngoại
     cursor.execute("DELETE FROM OrderItems")
     cursor.execute("DELETE FROM Orders")
+    cursor.execute("DELETE FROM Cart")          
+    cursor.execute("DELETE FROM CostCart")      
     cursor.execute("DELETE FROM ActivityLog")
     cursor.execute("DELETE FROM FarmingActivities")
     cursor.execute("DELETE FROM Crops")
     cursor.execute("DELETE FROM Users")
-    cursor.execute("DELETE FROM CostCart")
 
     # --- 1. USERS ---
     users = [
@@ -101,3 +101,4 @@ def seed_data():
 
 if __name__ == "__main__":
     seed_data()
+
