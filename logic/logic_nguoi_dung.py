@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def lay_thong_tin_nguoi_dung(user_id):
     """
@@ -52,3 +52,4 @@ def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email, add
     success = cursor.rowcount > 0
     conn.close()
     return success
+
