@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def lay_danh_sach_vu_mua(farmer_id):
     """
