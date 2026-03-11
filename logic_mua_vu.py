@@ -2,11 +2,11 @@ from database_connector import get_connection
 
 def lay_danh_sach_vu_mua(farmer_id):
     """
-    Lấy danh sách các vụ mùa của một nông dân.
-    
+    Lấy danh sách tất cả vụ mùa của một nông dân.
+
     Args:
         farmer_id (int): ID của nông dân.
-    
+
     Returns:
         list: Danh sách các tuple (activity_id, crop_name, plot_name, area, start_date, selling_price, status).
     """
@@ -25,13 +25,38 @@ def lay_danh_sach_vu_mua(farmer_id):
     conn.close()
     return rows
 
+def lay_danh_sach_vu_mua_da_thu_hoach(farmer_id):
+    """
+    Lấy danh sách các vụ mùa đã thu hoạch (status = 'Đã thu hoạch') của một nông dân.
+    Dùng cho màn hình đăng bán.
+
+    Args:
+        farmer_id (int): ID của nông dân.
+
+    Returns:
+        list: Danh sách các tuple (activity_id, crop_name, plot_name, area, start_date, selling_price).
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT fa.activity_id, c.crop_name, fa.plot_name, fa.area, fa.start_date, fa.selling_price
+        FROM FarmingActivities fa
+        JOIN Crops c ON fa.crop_id = c.crop_id
+        WHERE fa.farmer_id = ? AND fa.status = 'Đã thu hoạch'
+        ORDER BY fa.start_date DESC
+    """
+    cursor.execute(query, (farmer_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
 def lay_chi_tiet_vu_mua(activity_id):
     """
     Lấy thông tin chi tiết một vụ mùa.
-    
+
     Args:
         activity_id (int): ID của vụ mùa.
-    
+
     Returns:
         tuple: (activity_id, farmer_id, crop_id, plot_name, area, start_date, selling_price, status)
                None nếu không tìm thấy.
@@ -46,15 +71,15 @@ def lay_chi_tiet_vu_mua(activity_id):
 def them_vu_mua(farmer_id, crop_id, plot_name, area, start_date, status='Đang trồng'):
     """
     Thêm một vụ mùa mới (giá bán mặc định NULL).
-    
+
     Args:
         farmer_id (int): ID của nông dân.
         crop_id (int): ID của cây trồng.
         plot_name (str): Tên mảnh đất.
         area (float): Diện tích (m2).
         start_date (str): Ngày bắt đầu (YYYY-MM-DD).
-        status (str): Trạng thái (mặc định 'Đang trồng').
-    
+        status (str): Trạng thái ban đầu (mặc định 'Đang trồng').
+
     Returns:
         int: ID của vụ mùa vừa tạo.
     """
@@ -72,7 +97,7 @@ def them_vu_mua(farmer_id, crop_id, plot_name, area, start_date, status='Đang t
 def sua_vu_mua(activity_id, crop_id, plot_name, area, start_date, selling_price, status):
     """
     Cập nhật thông tin vụ mùa (bao gồm giá bán).
-    
+
     Args:
         activity_id (int): ID của vụ mùa.
         crop_id (int): ID cây trồng mới.
@@ -81,7 +106,7 @@ def sua_vu_mua(activity_id, crop_id, plot_name, area, start_date, selling_price,
         start_date (str): Ngày bắt đầu mới.
         selling_price (float or None): Giá bán mới (có thể None).
         status (str): Trạng thái mới.
-    
+
     Returns:
         None
     """
@@ -97,12 +122,12 @@ def sua_vu_mua(activity_id, crop_id, plot_name, area, start_date, selling_price,
 
 def cap_nhat_gia_ban(activity_id, selling_price):
     """
-    Cập nhật giá bán cho vụ mùa (thường dùng khi chuẩn bị đăng bán).
-    
+    Cập nhật giá bán cho vụ mùa (không thay đổi trạng thái).
+
     Args:
         activity_id (int): ID của vụ mùa.
         selling_price (float or None): Giá bán mới.
-    
+
     Returns:
         None
     """
@@ -119,10 +144,10 @@ def cap_nhat_gia_ban(activity_id, selling_price):
 def xoa_vu_mua(activity_id):
     """
     Xóa vụ mùa (chỉ khi chưa có nhật ký canh tác).
-    
+
     Args:
         activity_id (int): ID của vụ mùa.
-    
+
     Raises:
         Exception: Nếu vụ mùa đã có nhật ký.
     """
