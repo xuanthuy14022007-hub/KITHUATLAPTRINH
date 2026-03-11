@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 import sqlite3
 
 def login(username, password):
@@ -80,3 +80,4 @@ def reset_password(username, new_password):
     success = cursor.rowcount > 0
     conn.close()
     return success
+
