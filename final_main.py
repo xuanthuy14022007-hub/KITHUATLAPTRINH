@@ -1,19 +1,55 @@
+# main.py
+"""
+File chính của ứng dụng Nông Ơi!
+Khởi tạo QApplication, cửa sổ chính (MasterWindow) với QStackedWidget,
+cài đặt bắt lỗi toàn cục và hiển thị màn hình đầu tiên.
+"""
+
 import sys
 import traceback
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox
+from PyQt6.QtCore import Qt
+from PyQt6 import uic
 
-# Import tất cả các màn hình chỗ này
-#
-#
-#
-# Import hàm chuyển màn hình từ utils
-from utils.window_manager import switch_window
+# Import tất cả các màn hình (các class này sẽ được switch_window gọi)
+from screens.splash import SplashScreen
+from screens.login import LoginScreen
+from screens.nong_dan_dashboard import NongDanDashboardScreen
+from screens.chu_vua_dashboard import ChuVuaDashboardScreen
+from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
+from screens.chi_tiet_cay_trong import ChiTietCayTrongScreen
+from screens.nhat_ky_canh_tac import NhatKyCanhTacScreen
+from screens.goi_y_cham_soc import GoiYChamSocScreen
+from screens.luan_canh import LuanCanhScreen
+from screens.profile_nong_dan import ProfileNongDanScreen
+from screens.edit_profile_nong_dan import EditProfileNongDanScreen
+from screens.dang_san_pham import DangSanPhamScreen
+from screens.danh_sach_don_hang import DanhSachDonHangScreen
+from screens.chi_tiet_don_hang import ChiTietDonHangScreen
+from screens.search_list_mat_hang import SearchListMatHangScreen
+from screens.chi_tiet_nong_san import ChiTietNongSanScreen
+from screens.gio_hang import GioHangScreen
+from screens.pre_order import PreOrderScreen
+from screens.danh_sach_don_hang_chu_vua import DanhSachDonHangChuVuaScreen
+from screens.phan_tich_bao_cao import PhanTichBaoCaoScreen
+from screens.nhap_profile_info import NhapProfileInfoScreen
+from screens.register_xacthuc import RegisterXacThucScreen
+from screens.register import RegisterScreen
+from screens.new_password import NewPasswordScreen
+from screens.otp import OtpScreen
+from screens.forgot_key import ForgotKeyScreen
+from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup  # popup không dùng switch_window
+
+# Import các hàm từ window_manager
+from utils.window_manager import set_main_window, switch_window, set_current_user, get_current_user
 
 # ==========================================
 # CƠ CHẾ BẮT LỖI TỰ ĐỘNG
 # ==========================================
 def global_exception_handler(exc_type, exc_value, exc_traceback):
-    """Bắt mọi lỗi Python chưa xử lý và hiển thị popup thay vì crash app."""
+    """
+    Bắt mọi lỗi Python chưa được xử lý và hiển thị popup thay vì để app crash.
+    """
     error_msg = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
     print(error_msg)  # In ra terminal để debug
     msg = QMessageBox()
@@ -27,12 +63,38 @@ def global_exception_handler(exc_type, exc_value, exc_traceback):
 sys.excepthook = global_exception_handler
 
 # ==========================================
+# CỬA SỔ CHÍNH (MASTER WINDOW) VỚI QSTACKEDWIDGET
+# ==========================================
+class MasterWindow(QMainWindow):
+    """
+    Cửa sổ chính của ứng dụng, chứa QStackedWidget để quản lý các màn hình con.
+    """
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Nông Ơi! - Quản lý Nông Trại")
+        self.resize(1280, 800)  # Kích thước mặc định, có thể thay đổi sau
+
+        # Tạo stacked widget và đặt làm central widget
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
+
+        # Có thể thêm các thiết lập khác như menu bar, status bar nếu cần
+
+# ==========================================
 # KHỞI CHẠY ỨNG DỤNG
 # ==========================================
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # Bắt đầu với màn hình Splash
+    # Tạo cửa sổ chính
+    main_window = MasterWindow()
+    # Gán cho window_manager để các màn hình có thể dùng switch_window
+    set_main_window(main_window)
+
+    # Hiển thị màn hình đầu tiên (SplashScreen)
     switch_window(SplashScreen)
+
+    # Hiển thị cửa sổ chính
+    main_window.show()
 
     sys.exit(app.exec())
