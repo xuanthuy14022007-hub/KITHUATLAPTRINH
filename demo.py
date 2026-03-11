@@ -107,7 +107,8 @@ def seed_data():
         (503, 2, 1, 'Xác nhận', 6440000, '2026-04-15'),
         (504, 2, 1, 'Xác nhận', 10500000, '2026-05-25'),
         (505, 2, 1, 'Xác nhận', 7600000, '2026-06-15'),
-        (506, 2, 1, 'Chờ xác nhận', 4500000, '2026-07-01')
+        # Sửa đơn 506: dùng activity_id = 104 (vụ đã thu hoạch, còn hàng)
+        (506, 2, 1, 'Chờ xác nhận', 10500000, '2026-07-01')  # 750kg * 14000 = 10.500.000
     ]
     cursor.executemany(
         "INSERT INTO Orders (order_id, merchant_id, farmer_id, status, total_amount, order_date) VALUES (?,?,?,?,?,?)",
@@ -119,9 +120,9 @@ def seed_data():
         (1, 501, 1, 101, 1500, 19000),
         (2, 502, 3, 102, 600, 32000),
         (3, 503, 6, 103, 280, 23000),
-        (4, 504, 10, 104, 750, 14000),
-        (5, 505, 14, 105, 380, 20000),
-        (6, 506, 8, 106, 100, 35000)
+        (4, 504, 10, 104, 750, 14000),   # vụ 104 bán 750kg (giá base)
+        (5, 505, 14, 105, 380, 20000),    # vụ 105 bán 380kg
+        (6, 506, 10, 104, 750, 14000)     # đơn 506 cũng mua 750kg vụ 104 (chờ xác nhận)
     ]
     cursor.executemany(
         "INSERT INTO OrderItems (item_id, order_id, crop_id, activity_id, quantity, unit_price) VALUES (?,?,?,?,?,?)",
