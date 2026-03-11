@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 import sqlite3
 
 # ================== MERCHANT ==================
