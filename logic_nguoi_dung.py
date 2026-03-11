@@ -3,10 +3,10 @@ from database_connector import get_connection
 def lay_thong_tin_nguoi_dung(user_id):
     """
     Lấy thông tin người dùng theo ID.
-    
+
     Args:
         user_id (int): ID của người dùng.
-    
+
     Returns:
         tuple: (user_id, username, role, full_name, email, address, farm_name, description)
                None nếu không tìm thấy.
@@ -24,7 +24,7 @@ def lay_thong_tin_nguoi_dung(user_id):
 def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email, address, farm_name, description):
     """
     Cập nhật thông tin người dùng.
-    
+
     Args:
         user_id (int): ID của người dùng.
         username (str): Tên đăng nhập mới.
@@ -34,7 +34,7 @@ def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email, add
         address (str): Địa chỉ mới.
         farm_name (str): Tên nông trại/vựa mới.
         description (str): Mô tả mới.
-    
+
     Returns:
         bool: True nếu cập nhật thành công, False nếu không tìm thấy user.
     """
