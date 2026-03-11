@@ -12,34 +12,8 @@ from PyQt6.QtCore import Qt
 from PyQt6 import uic
 
 # Import tất cả các màn hình (các class này sẽ được switch_window gọi)
-from screens.splash import SplashScreen
-from screens.login import LoginScreen
-from screens.nong_dan_dashboard import NongDanDashboardScreen
-from screens.chu_vua_dashboard import ChuVuaDashboardScreen
-from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
-from screens.chi_tiet_cay_trong import ChiTietCayTrongScreen
-from screens.nhat_ky_canh_tac import NhatKyCanhTacScreen
-from screens.goi_y_cham_soc import GoiYChamSocScreen
-from screens.luan_canh import LuanCanhScreen
-from screens.profile_nong_dan import ProfileNongDanScreen
-from screens.edit_profile_nong_dan import EditProfileNongDanScreen
-from screens.dang_san_pham import DangSanPhamScreen
-from screens.danh_sach_don_hang import DanhSachDonHangScreen
-from screens.chi_tiet_don_hang import ChiTietDonHangScreen
-from screens.search_list_mat_hang import SearchListMatHangScreen
-from screens.chi_tiet_nong_san import ChiTietNongSanScreen
-from screens.gio_hang import GioHangScreen
-from screens.pre_order import PreOrderScreen
-from screens.danh_sach_don_hang_chu_vua import DanhSachDonHangChuVuaScreen
-from screens.phan_tich_bao_cao import PhanTichBaoCaoScreen
-from screens.nhap_profile_info import NhapProfileInfoScreen
-from screens.register_xacthuc import RegisterXacThucScreen
-from screens.register import RegisterScreen
-from screens.new_password import NewPasswordScreen
-from screens.otp import OtpScreen
-from screens.forgot_key import ForgotKeyScreen
-from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup  # popup không dùng switch_window
-
+#
+#
 # Import các hàm từ window_manager
 from utils.window_manager import set_main_window, switch_window, set_current_user, get_current_user
 
