@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def lay_danh_sach_cay():
     """
@@ -30,3 +30,4 @@ def lay_chi_tiet_cay(crop_id):
     crop = cursor.fetchone()
     conn.close()
     return crop
+
