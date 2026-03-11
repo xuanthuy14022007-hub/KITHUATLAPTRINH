@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def them_chi_phi(farmer_id, cost_type, amount):
     """
@@ -152,3 +152,4 @@ def lay_ti_le_don_hang(farmer_id):
         return None
     finally:
         conn.close()
+
