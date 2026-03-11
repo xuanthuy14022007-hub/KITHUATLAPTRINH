@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def goi_y_luan_canh(crop_id):
     """
@@ -31,3 +31,4 @@ def goi_y_luan_canh(crop_id):
         return []
     finally:
         conn.close()
+
