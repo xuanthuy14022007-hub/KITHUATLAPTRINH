@@ -4,11 +4,11 @@ import sqlite3
 def login(username, password):
     """
     Xác thực đăng nhập.
-    
+
     Args:
         username (str): Tên đăng nhập.
         password (str): Mật khẩu.
-    
+
     Returns:
         tuple: (user_id, username, role, full_name, email, address, farm_name, description)
                nếu thành công, None nếu thất bại.
@@ -25,7 +25,7 @@ def login(username, password):
 
 def logout():
     """
-    Đăng xuất (chỉ là hàm giữ chỗ).
+    Đăng xuất (hàm giữ chỗ).
     Returns:
         None
     """
@@ -34,7 +34,7 @@ def logout():
 def register(username, password, role, full_name, email, address, farm_name, description):
     """
     Đăng ký tài khoản mới.
-    
+
     Args:
         username (str): Tên đăng nhập.
         password (str): Mật khẩu.
@@ -44,7 +44,7 @@ def register(username, password, role, full_name, email, address, farm_name, des
         address (str): Địa chỉ.
         farm_name (str): Tên nông trại/vựa.
         description (str): Mô tả.
-    
+
     Returns:
         bool: True nếu thành công, False nếu username/email đã tồn tại.
     """
@@ -65,11 +65,11 @@ def register(username, password, role, full_name, email, address, farm_name, des
 def reset_password(username, new_password):
     """
     Đặt lại mật khẩu cho người dùng.
-    
+
     Args:
         username (str): Tên đăng nhập.
         new_password (str): Mật khẩu mới.
-    
+
     Returns:
         bool: True nếu cập nhật thành công, False nếu username không tồn tại.
     """
