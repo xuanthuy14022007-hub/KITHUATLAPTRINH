@@ -3,8 +3,8 @@ from database_connector import get_connection
 
 def init_db():
     """
-    Khởi tạo cơ sở dữ liệu: tạo tất cả các bảng với ràng buộc và khóa ngoại.
-    Các bảng: Users, Crops, FarmingActivities, ActivityLog, Orders, OrderItems, Cart, CostCart.
+    Tạo các bảng: Users, Crops, FarmingActivities, ActivityLog, Orders, OrderItems, Cart, CostCart.
+    Mỗi bảng có ràng buộc CHECK và FOREIGN KEY phù hợp.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -19,8 +19,8 @@ def init_db():
         full_name TEXT,
         email TEXT UNIQUE, 
         address TEXT,
-        farm_name TEXT,
-        description TEXT
+        farm_name TEXT,                -- Tên nông trại / vựa
+        description TEXT                -- Mô tả về nông trại / vựa
     )''')
 
     # 2. BẢNG DANH MỤC CÂY TRỒNG
