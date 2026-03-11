@@ -1,4 +1,4 @@
-from database_connector import get_connection
+from database.database_connector import get_connection
 
 def lay_nhat_ky_theo_mua_vu(activity_id, limit=3):
     """
