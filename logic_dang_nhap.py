@@ -1,55 +1,82 @@
 from database_connector import get_connection
 import sqlite3
-#Hàm đăng nhập
+
 def login(username, password):
-    conn = get_connection()  #mở kết nối database
-    cursor = conn.cursor()  #tạo con trỏ SQL
-
-    cursor.execute(
-        "SELECT user_id, username, role, full_name, email FROM Users WHERE username = ? AND password = ?",  #tìm user hợp lệ
-        (username, password)  #truyền username và password
-    )
-    user = cursor.fetchone()  #lấy 1 dòng dữ liệu
-
-    conn.close()  #đóng kết nối database
-    return user  #có user thì trả tuple, không có thì None
-
-#Hàm đăng xuất
-def logout():
-    return None  #xóa trạng thái user đang đăng nhập trong chương trình
-
-#Hàm đăng kí
-def register(username, password, role, full_name, email):
+    """
+    Xác thực đăng nhập.
+    
+    Args:
+        username (str): Tên đăng nhập.
+        password (str): Mật khẩu.
+    
+    Returns:
+        tuple: (user_id, username, role, full_name, email, address, farm_name, description)
+               nếu thành công, None nếu thất bại.
+    """
     conn = get_connection()
     cursor = conn.cursor()
+    cursor.execute(
+        "SELECT user_id, username, role, full_name, email, address, farm_name, description FROM Users WHERE username = ? AND password = ?",
+        (username, password)
+    )
+    user = cursor.fetchone()
+    conn.close()
+    return user
 
+def logout():
+    """
+    Đăng xuất (chỉ là hàm giữ chỗ).
+    Returns:
+        None
+    """
+    return None
+
+def register(username, password, role, full_name, email, address, farm_name, description):
+    """
+    Đăng ký tài khoản mới.
+    
+    Args:
+        username (str): Tên đăng nhập.
+        password (str): Mật khẩu.
+        role (str): 'Farmer' hoặc 'Merchant'.
+        full_name (str): Họ tên.
+        email (str): Email.
+        address (str): Địa chỉ.
+        farm_name (str): Tên nông trại/vựa.
+        description (str): Mô tả.
+    
+    Returns:
+        bool: True nếu thành công, False nếu username/email đã tồn tại.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
     try:
         cursor.execute(
-            "INSERT INTO Users (username, password, role, full_name, email) VALUES (?, ?, ?, ?, ?)",  #thêm user mới
-            (username, password, role, full_name, email)  #dữ liệu tương ứng với bảng Users
+            "INSERT INTO Users (username, password, role, full_name, email, address, farm_name, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (username, password, role, full_name, email, address, farm_name, description)
         )
-        conn.commit()  #lưu thay đổi xuống database
-        return True  #đăng ký thành công
+        conn.commit()
+        return True
     except sqlite3.IntegrityError:
-        return False  # username bị trùng
+        return False
     finally:
         conn.close()
 
-#Hàm khôi phục mật khẩu
 def reset_password(username, new_password):
+    """
+    Đặt lại mật khẩu cho người dùng.
+    
+    Args:
+        username (str): Tên đăng nhập.
+        new_password (str): Mật khẩu mới.
+    
+    Returns:
+        bool: True nếu cập nhật thành công, False nếu username không tồn tại.
+    """
     conn = get_connection()
     cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE Users SET password = ? WHERE username = ?",  #cập nhật password mới
-        (new_password, username)  #mật khẩu mới và username
-    )
-    conn.commit()  #lưu thay đổi
-
-    success = cursor.rowcount > 0  #kiểm tra có user được cập nhật không
+    cursor.execute("UPDATE Users SET password = ? WHERE username = ?", (new_password, username))
+    conn.commit()
+    success = cursor.rowcount > 0
     conn.close()
-
-    return success  #True nếu đổi được, False nếu không có username
-
-
-
+    return success
