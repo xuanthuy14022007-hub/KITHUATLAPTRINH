@@ -1,40 +1,54 @@
 from database_connector import get_connection
 
-# Hàm lấy thông tin người dùng theo ID
 def lay_thong_tin_nguoi_dung(user_id):
-    conn = get_connection()      # mở kết nối database
-    cursor = conn.cursor()       # tạo con trỏ SQL
-
+    """
+    Lấy thông tin người dùng theo ID.
+    
+    Args:
+        user_id (int): ID của người dùng.
+    
+    Returns:
+        tuple: (user_id, username, role, full_name, email, address, farm_name, description)
+               None nếu không tìm thấy.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
     cursor.execute(
-        "SELECT user_id, username, role, full_name, email FROM Users WHERE user_id = ?",
-        (user_id,)               # truyền user_id vào câu lệnh
+        "SELECT user_id, username, role, full_name, email, address, farm_name, description FROM Users WHERE user_id = ?",
+        (user_id,)
     )
+    user = cursor.fetchone()
+    conn.close()
+    return user
 
-    user = cursor.fetchone()     # lấy 1 dòng dữ liệu (tuple hoặc None)
-
-    conn.close()                 # đóng kết nối
-
-    return user                  # trả về thông tin người dùng
-
-# Hàm cập nhật thông tin người dùng
-def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email):
-    conn = get_connection()      # mở kết nối database
-    cursor = conn.cursor()       # tạo con trỏ SQL
-
+def cap_nhat_thong_tin_nguoi_dung(user_id, username, role, full_name, email, address, farm_name, description):
+    """
+    Cập nhật thông tin người dùng.
+    
+    Args:
+        user_id (int): ID của người dùng.
+        username (str): Tên đăng nhập mới.
+        role (str): Vai trò mới.
+        full_name (str): Họ tên mới.
+        email (str): Email mới.
+        address (str): Địa chỉ mới.
+        farm_name (str): Tên nông trại/vựa mới.
+        description (str): Mô tả mới.
+    
+    Returns:
+        bool: True nếu cập nhật thành công, False nếu không tìm thấy user.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
     cursor.execute(
         """
         UPDATE Users
-        SET username = ?, role = ?, full_name = ?,  email = ?
+        SET username = ?, role = ?, full_name = ?, email = ?, address = ?, farm_name = ?, description = ?
         WHERE user_id = ?
         """,
-        (username, role, full_name, email, user_id)  # truyền dữ liệu mới vào
+        (username, role, full_name, email, address, farm_name, description, user_id)
     )
-
-    conn.commit()                # lưu thay đổi xuống database
-
-    success = cursor.rowcount > 0  # kiểm tra có dòng nào được cập nhật không
-
-    conn.close()                 # đóng kết nối
-
-    return success               # True nếu cập nhật thành công, False nếu không
-
+    conn.commit()
+    success = cursor.rowcount > 0
+    conn.close()
+    return success
