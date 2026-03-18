@@ -141,6 +141,29 @@ def thanh_toan_gio_hang(merchant_id, order_date):
         conn.close()
 
 # ================== FARMER ==================
+def lay_thong_tin_don_hang(order_id):
+    """
+    Lấy thông tin tổng quan của một đơn hàng (người mua, tổng tiền, ngày, trạng thái).
+    
+    Args:
+        order_id (int): ID của đơn hàng.
+    
+    Returns:
+        tuple: (order_id, merchant_name, total_amount, order_date, status) 
+               hoặc None nếu không tìm thấy.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        SELECT o.order_id, u.full_name, o.total_amount, o.order_date, o.status
+        FROM Orders o
+        JOIN Users u ON o.merchant_id = u.user_id
+        WHERE o.order_id = ?
+    """
+    cursor.execute(query, (order_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return row
 
 def lay_danh_sach_don_hang_den(farmer_id):
     """
