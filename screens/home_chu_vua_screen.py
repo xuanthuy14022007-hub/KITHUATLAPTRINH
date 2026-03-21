@@ -139,8 +139,10 @@ class ChuVuaDashboardScreen(QWidget):
 
     def ve_trang_chu(self):
         switch_window(ChuVuaDashboardScreen())
+        
     def mo_ho_so(self):
         switch_window(ProfileChuVuaScreen())
+        
     def mo_giao_thuong(self):
         switch_window(SearchListMatHangScreen())
 
