@@ -1,17 +1,13 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
-from logic.main import (
-    switch_window,
-    ChuVuaDashboardScreen,
-    SearchListMatHangScreen,
-    ProfileChuVuaScreen,
-    PreOrderScreen,
-    DanhSachDonHangChuVuaScreen,
-    LoginScreen,
-)
-
+from utils.window_manager import get_current_user, switch_window
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen 
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+from screens.pre_order_screen import PreOrderScreen
+from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
+from screens.login_screen import LoginScreen
 
 class GioHangScreen(QWidget):
     def __init__(self):
