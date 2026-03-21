@@ -3,7 +3,12 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_tinh_toan import lay_ket_qua_tai_chinh_tong_quat, them_chi_phi
-
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from utils.window_manager import set_current_user
+from screens.login_screen import LoginScreen
 
 class PhanTichBaoCaoScreen(QWidget):
     def __init__(self):
@@ -105,26 +110,20 @@ class PhanTichBaoCaoScreen(QWidget):
 
     # ĐIỀU HƯỚNG
     def ve_trang_chu(self):
-        from screens.home_nong_dan_screen import NongDanDashboardScreen
         switch_window(NongDanDashboardScreen())
 
     def mo_quan_ly_nong_trai(self):
-        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
         switch_window(DanhSachCayTrongScreen())
 
     def mo_giao_thuong(self):
-        from screens.dang_san_pham_screen import DangSanPhamScreen
         switch_window(DangSanPhamScreen())
 
     def mo_ho_so(self):
-        from screens.profile_nong_dan_screen import ProfileNongDanScreen
         switch_window(ProfileNongDanScreen())
 
     def dang_xuat(self):
         reply = QMessageBox.question(self, 'Xác nhận', 'Bạn có chắc chắn muốn đăng xuất?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            from utils.window_manager import set_current_user
             set_current_user(None)
-            from screens.login_screen import LoginScreen
             switch_window(LoginScreen())
