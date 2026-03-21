@@ -3,7 +3,7 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
-from screens.chinh_sua_cay_trong import ChinhSuaCayTrongPopup
+from screens.chinh_sua_cay_trong_screen import ChinhSuaCayTrongPopup
 from screens.home_nong_dan_screen import NongDanDashboardScreen
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 from screens.dang_san_pham_screen import DangSanPhamScreen
