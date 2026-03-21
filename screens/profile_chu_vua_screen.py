@@ -5,7 +5,7 @@ from utils.window_manager import get_current_user, set_current_user, switch_wind
 from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
 from screens.home_chu_vua_screen import ChuVuaDashboardScreen
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangScreen
+from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
 from screens.login_screen import LoginScreen
 
 class ProfileChuVuaScreen(QWidget):
