@@ -1,21 +1,17 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox, QLabel
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
+from utils.window_manager import get_current_user,switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
 from logic.logic_nhat_ky import lay_nhat_ky_theo_mua_vu
-from logic.main import (
-    switch_window,
-    NongDanDashboardScreen,
-    DanhSachCayTrongScreen,
-    ChiTietCayTrongScreen,
-    NhatKyCanhTacScreen,
-    LuanCanhScreen,
-    DangSanPhamScreen,
-    PhanTichBaoCaoScreen,
-    ProfileNongDanScreen,
-    LoginScreen,
-)
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
+from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+from screens.luan_canh_screen import LuanCanhScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.login_screen import LoginScreen
 
 GOI_Y_CHAM_SOC = {
     'Đang trồng':    [('🚰', 'Tưới nước đều đặn mỗi ngày'), ('🌿', 'Kiểm tra sâu bệnh định kỳ'), ('🪣', 'Bón phân theo chu kỳ')],
