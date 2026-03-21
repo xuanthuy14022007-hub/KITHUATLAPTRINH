@@ -6,6 +6,9 @@ from datetime import datetime
 from utils.window_manager import get_current_user
 from logic.logic_mua_vu import them_vu_mua, sua_vu_mua, lay_chi_tiet_vu_mua, xoa_vu_mua
 from logic.logic_cay_trong import get_or_create_crop, lay_chi_tiet_cay
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from utils.window_manager import switch_window
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 
 class ChinhSuaCayTrongPopup(QWidget):
     """Popup nhỏ để thêm/sửa/xoá cây trồng (không dùng switch_window)."""
@@ -108,8 +111,6 @@ class ChinhSuaCayTrongPopup(QWidget):
             
         # Đóng popup và reload lại danh sách cây trồng
         self.close()
-        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-        from utils.window_manager import switch_window
         switch_window(DanhSachCayTrongScreen())
 
     def xoa_thong_tin(self):
@@ -122,8 +123,6 @@ class ChinhSuaCayTrongPopup(QWidget):
                 QMessageBox.information(self, "Thành công", "Đã xóa vụ mùa!")
                 self.close()
                 # Need to return to list screen
-                from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-                from utils.window_manager import switch_window
                 switch_window(DanhSachCayTrongScreen())
             except Exception as e:
                 QMessageBox.warning(self, "Lỗi", str(e))
