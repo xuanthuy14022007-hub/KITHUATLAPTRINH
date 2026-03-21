@@ -2,6 +2,8 @@ from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
 from utils.window_manager import switch_window
+from screens.register_xacthuc_screen import RegisterXacThucScreen
+from screens.login_screen import LoginScreen
 
 
 class RegisterScreen(QWidget):
@@ -40,9 +42,7 @@ class RegisterScreen(QWidget):
             'password': self.txt_mat_khau.text().strip(),
             'role': role
         }
-        from screens.register_xacthuc_screen import RegisterXacThucScreen
         switch_window(RegisterXacThucScreen(user_data))
 
     def quay_lai_login(self, event):
-        from screens.login_screen import LoginScreen
         switch_window(LoginScreen())
