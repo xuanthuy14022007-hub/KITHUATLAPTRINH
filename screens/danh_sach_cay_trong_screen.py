@@ -5,7 +5,14 @@ from PyQt6 import uic
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_cay_trong import lay_danh_sach_cay
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
-
+from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+from utils.window_manager import set_current_user
+from screens.login_screen import LoginScreen
 
 class DanhSachCayTrongScreen(QWidget):
     def __init__(self):
@@ -119,29 +126,23 @@ class DanhSachCayTrongScreen(QWidget):
                     f"background-color: {bg}; color: {fg}; border-radius: 12px; padding: 4px 12px; font-weight: bold; font-size: 10pt;"
                 )
     def mo_popup_them_sua(self):
-        from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup
         self.popup = ChinhSuaCayTrongPopup()
         self.popup.show()
 
     # ĐIỀU HƯỚNG
     def ve_trang_chu(self):
-        from screens.home_nong_dan_screen import NongDanDashboardScreen
         switch_window(NongDanDashboardScreen())
 
     def mo_giao_thuong(self):
-        from screens.dang_san_pham_screen import DangSanPhamScreen
         switch_window(DangSanPhamScreen())
 
     def mo_phan_tich(self):
-        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
         switch_window(PhanTichBaoCaoScreen())
 
     def mo_ho_so(self):
-        from screens.profile_nong_dan_screen import ProfileNongDanScreen
         switch_window(ProfileNongDanScreen())
 
     def mo_chi_tiet_cay_trong(self, activity_id=None):
-        from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
         # Cần cách truyền activity_id sang ChiTietCayTrongScreen thay vì constructor rỗng nếu muốn
         screen = ChiTietCayTrongScreen(activity_id=activity_id) if activity_id else ChiTietCayTrongScreen()
         switch_window(screen)
@@ -150,7 +151,5 @@ class DanhSachCayTrongScreen(QWidget):
         reply = QMessageBox.question(self, 'Xác nhận', 'Bạn có chắc chắn muốn đăng xuất?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            from utils.window_manager import set_current_user
             set_current_user(None)
-            from screens.login_screen import LoginScreen
             switch_window(LoginScreen())
