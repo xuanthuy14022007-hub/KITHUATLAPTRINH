@@ -7,7 +7,7 @@ from screens.home_nong_dan_screen import NongDanDashboardScreen
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
 from screens.dang_san_pham_screen import DangSanPhamScreen
-from edit_profile_nong_dan_screen import EditProfileNongDanScreen
+from screens.edit_profile_nong_dan_screen import EditProfileNongDanScreen
 from screens.login_screen import LoginScreen
 
 class ProfileNongDanScreen(QWidget):
