@@ -7,14 +7,14 @@ và các nút xác nhận / từ chối đơn.
 
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-from logic.trade import lay_chi_tiet_don_hang, cap_nhat_trang_thai_don_hang, lay_thong_tin_don_hang
+from logic.giao_thuong import lay_chi_tiet_don_hang, cap_nhat_trang_thai_don_hang, lay_thong_tin_don_hang
 from utils.window_manager import switch_window, get_current_user
-from screens.nong_dan_dashboard import NongDanDashboardScreen
-from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
-from screens.profile_nong_dan import ProfileNongDanScreen
-from screens.phan_tich_bao_cao import PhanTichBaoCaoScreen
-from screens.danh_sach_don_hang import DanhSachDonHangScreen
-from screens.login import LoginScreen
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.danh_sach_don_hang_screen import DanhSachDonHangScreen
+from screens.login_screen import LoginScreen
 
 class ChiTietDonHangScreen(QWidget):
     """
