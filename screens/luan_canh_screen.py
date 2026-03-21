@@ -1,22 +1,17 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
+from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua, lay_chi_tiet_vu_mua
 from logic.logic_luan_canh import goi_y_luan_canh
-from logic.main import (
-    switch_window,
-    NongDanDashboardScreen,
-    DanhSachCayTrongScreen,
-    ChiTietCayTrongScreen,
-    NhatKyCanhTacScreen,
-    GoiYChamSocScreen,
-    DangSanPhamScreen,
-    PhanTichBaoCaoScreen,
-    ProfileNongDanScreen,
-    LoginScreen,
-)
-
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.login_screen import LoginScreen
 
 class LuanCanhScreen(QWidget):
     def __init__(self):
