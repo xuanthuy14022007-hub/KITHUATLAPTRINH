@@ -8,7 +8,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib import colors
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Table, TableStyle
-from database.logic_tinh_toan import (
+from logic.logic_tinh_toan import (
     lay_ket_qua_tai_chinh_tong_quat,
     tinh_co_cau_tai_chinh_theo_doanh_thu,
     lay_ti_le_don_hang
