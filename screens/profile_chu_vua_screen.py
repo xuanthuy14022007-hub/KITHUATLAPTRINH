@@ -70,9 +70,6 @@ class ProfileChuVuaScreen(QWidget):
     def mo_giao_thuong(self):
         switch_window(SearchListMatHangScreen())
 
-    def reload_profile(self):
-        switch_window(ProfileChuVuaScreen())
-
     def dang_xuat(self):
         reply = QMessageBox.question(
             self,
