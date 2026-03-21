@@ -6,15 +6,15 @@ Hiển thị các đơn hàng đến, cho phép xem chi tiết, lọc và sắp 
 
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-from logic.trade import lay_danh_sach_don_hang_den
+from logic.logic_giao_thuong import lay_danh_sach_don_hang_den
 from utils.window_manager import switch_window, get_current_user
-from screens.nong_dan_dashboard import NongDanDashboardScreen
-from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 from screens.profile_nong_dan import ProfileNongDanScreen
-from screens.phan_tich_bao_cao import PhanTichBaoCaoScreen
-from screens.dang_san_pham import DangSanPhamScreen
-from screens.chi_tiet_don_hang import ChiTietDonHangScreen
-from screens.login import LoginScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.chi_tiet_don_hang_screen import ChiTietDonHangScreen
+from screens.login_screen import LoginScreen
 
 class DanhSachDonHangScreen(QWidget):
     """
