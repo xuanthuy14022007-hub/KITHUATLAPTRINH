@@ -3,7 +3,8 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window, set_current_user
 from logic.logic_dang_nhap import login
-
+from screens.forgot_key_screen import ForgotKeyScreen
+from screens.register_screen import RegisterScreen
 
 class LoginScreen(QWidget):
     def __init__(self):
@@ -72,9 +73,7 @@ class LoginScreen(QWidget):
 
     # ĐIỀU HƯỚNG
     def mo_man_hinh_quen_mat_khau(self, event):
-        from screens.forgot_key_screen import ForgotKeyScreen
         switch_window(ForgotKeyScreen())
 
     def mo_man_hinh_dang_ky(self, event):
-        from screens.register_screen import RegisterScreen
         switch_window(RegisterScreen())
