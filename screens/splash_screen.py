@@ -3,7 +3,7 @@ from PyQt6.QtCore import QTimer, QPropertyAnimation, QEasingCurve
 from PyQt6 import uic
 
 from utils.window_manager import switch_window
-
+from screens.login_screen import LoginScreen
 
 class SplashScreen(QWidget):
     def __init__(self):
@@ -27,5 +27,4 @@ class SplashScreen(QWidget):
         self.animation.start()
 
     def chuyen_sang_login(self):
-        from screens.login_screen import LoginScreen
         switch_window(LoginScreen())
