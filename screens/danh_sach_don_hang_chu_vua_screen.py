@@ -3,15 +3,12 @@ from datetime import datetime
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
-from logic.main import (
-    switch_window,
-    ChuVuaDashboardScreen,
-    SearchListMatHangScreen,
-    ProfileChuVuaScreen,
-    GioHangScreen,
-    LoginScreen,
-)
+from utils.window_manager import switch_window, get_current_user
+from screens.home_chu_vua_screen import ChuVuaDashBoardScreen
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+from screens.gio_hang_screen import GioHangScreen
+from screens.login_screen import LoginScreen
 
 BADGE_CONFIG = {
     'Chờ xác nhận': ('#BDE08B', '#1C1C1C'),
