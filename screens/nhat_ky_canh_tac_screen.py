@@ -3,20 +3,17 @@ from datetime import datetime
 from PyQt6.QtWidgets import QWidget, QMessageBox, QInputDialog
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
+from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
 from logic.logic_nhat_ky import lay_nhat_ky_theo_mua_vu, them_nhat_ky, ghi_nhan_thu_hoach
-from logic.main import (
-    switch_window,
-    NongDanDashboardScreen,
-    DanhSachCayTrongScreen,
-    ChiTietCayTrongScreen,
-    DangSanPhamScreen,
-    PhanTichBaoCaoScreen,
-    ProfileNongDanScreen,
-    GoiYChamSocScreen,
-    LoginScreen,
-)
+from screen.home_nong_dan_screen import NongDanDashboardScreen 
+from screen.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screen.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+from screen.dang_san_phan_screen import DangSanPhamScreen
+from screen.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screen.profile_nong_dan_screen import ProfileNongDanScreen
+from screen.goi_y_cham_soc_screen import GoiYChamSocScreen
+from screen.login_screen import LoginScreen
 
 BADGE_COLOR_MAP = {
     'Gieo trồng': ('#F8E5E5', '#D66D6D'),
