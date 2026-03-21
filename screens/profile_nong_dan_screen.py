@@ -6,7 +6,7 @@ from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
 from screens.home_nong_dan_screen import NongDanDashboardScreen
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.danh_san_pham_screen import DangSanPhamScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
 from screens.login_screen import LoginScreen
 
 class ProfileNongDanScreen(QWidget):
