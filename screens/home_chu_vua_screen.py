@@ -3,15 +3,10 @@ from datetime import date
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
-from logic.main import (
-    switch_window,
-    ChuVuaDashboardScreen,
-    ProfileChuVuaScreen,
-    SearchListMatHangScreen,
-    LoginScreen,
-)
-
+from utils.window_manager import get_current_user, switch_window
+from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.login_screen import LoginScreen
 
 class ChuVuaDashboardScreen(QWidget):
     def __init__(self):
