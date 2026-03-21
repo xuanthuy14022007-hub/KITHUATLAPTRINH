@@ -4,7 +4,14 @@ from PyQt6 import uic
 from utils.window_manager import switch_window, get_current_user
 from database.database_connector import get_connection
 from logic.logic_giao_thuong import them_vao_gio_hang
-
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.gio_hang_screen import GioHangScreen
+from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
+from utils.window_manager import set_current_user
+from screens.login_screen import LoginScreen
 
 class ChiTietNongSanScreen(QWidget):
     def __init__(self, activity_id=None):
@@ -152,34 +159,26 @@ class ChiTietNongSanScreen(QWidget):
 
     # ĐIỀU HƯỚNG
     def ve_trang_chu(self):
-        from screens.home_chu_vua_screen import ChuVuaDashboardScreen
         switch_window(ChuVuaDashboardScreen())
 
     def mo_giao_thuong(self):
-        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
         switch_window(SearchListMatHangScreen())
 
     def mo_ho_so(self):
-        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
         switch_window(ProfileChuVuaScreen())
 
     def quay_lai_danh_sach(self):
-        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
         switch_window(SearchListMatHangScreen())
 
     def mo_gio_hang(self):
-        from screens.gio_hang_screen import GioHangScreen
         switch_window(GioHangScreen())
 
     def mo_don_hang(self):
-        from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
         switch_window(DanhSachDonHangChuVuaScreen())
 
     def dang_xuat(self):
         reply = QMessageBox.question(self, 'Xác nhận', 'Bạn có chắc chắn muốn đăng xuất?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            from utils.window_manager import set_current_user
             set_current_user(None)
-            from screens.login_screen import LoginScreen
             switch_window(LoginScreen())
