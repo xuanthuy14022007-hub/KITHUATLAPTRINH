@@ -5,6 +5,8 @@ from utils.window_manager import switch_window, set_current_user
 from logic.logic_dang_nhap import login
 from screens.forgot_key_screen import ForgotKeyScreen
 from screens.register_screen import RegisterScreen
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+from screens.home_nong_dan_screen import NongDanDashboardScreen
 
 class LoginScreen(QWidget):
     def __init__(self):
@@ -65,10 +67,8 @@ class LoginScreen(QWidget):
 
         # Chuyển màn hình theo vai trò
         if chon_nong_dan:
-            from screens.home_nong_dan_screen import NongDanDashboardScreen
             switch_window(NongDanDashboardScreen())
         else:
-            from screens.home_chu_vua_screen import ChuVuaDashboardScreen
             switch_window(ChuVuaDashboardScreen())
 
     # ĐIỀU HƯỚNG
