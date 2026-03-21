@@ -3,7 +3,7 @@ from PyQt6 import uic
 
 from utils.window_manager import get_current_user, set_current_user
 from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
-from utils.main import (
+from main import (
     switch_window,
     ChuVuaDashboardScreen,
     SearchListMatHangScreen,
