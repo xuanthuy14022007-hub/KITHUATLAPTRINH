@@ -11,8 +11,36 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageB
 from PyQt6.QtCore import Qt
 from PyQt6 import uic
 
+
+
 # Import tất cả các màn hình (các class này sẽ được switch_window gọi)
-#
+# Import tất cả các màn hình (các class này sẽ được switch_window gọi)
+from screens.splash_screen import SplashScreen
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+from screens.luan_canh_screen import LuanCanhScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.edit_profile_nong_dan_screen import EditProfileNongDanScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.danh_sach_don_hang_screen import DanhSachDonHangScreen
+from screens.chi_tiet_don_hang_screen import ChiTietDonHangScreen
+from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+from screens.chi_tiet_nong_san_screen import ChiTietNongSanScreen
+from screens.gio_hang_screen import GioHangScreen
+from screens.pre_order_screen import PreOrderScreen
+from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.nhap_profile_in4_screen import NhapProfileInfoScreen
+from screens.register_xacthuc_screen import RegisterXacThucScreen
+from screens.register_screen import RegisterScreen
+from screens.new_password_screen import NewPasswordScreen
+from screens.otp_screen import OtpScreen
+from screens.forgot_key_screen import ForgotKeyScreen
+# from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup
 #
 # Import các hàm từ window_manager
 from utils.window_manager import set_main_window, switch_window, set_current_user, get_current_user
