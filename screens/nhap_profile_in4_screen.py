@@ -2,9 +2,8 @@ from PyQt6.QtWidgets import QWidget, QMessageBox, QFileDialog
 from PyQt6.QtGui import QPixmap
 from PyQt6 import uic
 
+from screens.login_screen import LoginScreen
 from utils.window_manager import switch_window
-
-
 from logic.logic_dang_nhap import register
 
 class NhapProfileInfoScreen(QWidget):
@@ -53,5 +52,4 @@ class NhapProfileInfoScreen(QWidget):
             return
 
         QMessageBox.information(self, "Chúc mừng", "Tạo hồ sơ thành công! Vui lòng đăng nhập.")
-        from screens.login_screen import LoginScreen
         switch_window(LoginScreen())
