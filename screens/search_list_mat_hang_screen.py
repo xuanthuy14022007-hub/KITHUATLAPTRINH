@@ -9,7 +9,6 @@ from screens.profile_chu_vua_screen import ProfileChuVuaScreen
 from screens.gio_hang_screen import GioHangScreen
 from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
 from utils.window_manager import set_current_user
-v
 
 class SearchListMatHangScreen(QWidget):
     def __init__(self):
