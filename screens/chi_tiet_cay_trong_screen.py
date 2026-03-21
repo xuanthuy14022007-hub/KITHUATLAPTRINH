@@ -3,6 +3,18 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
+from screens.chinh_sua_cay_trong import ChinhSuaCayTrongPopup
+from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.dang_san_pham_screen import DangSanPhamScreen
+from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.profile_nong_dan_screen import ProfileNongDanScreen
+from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+from utils.window_manager import set_current_user
+from screens.login_screen import LoginScreen
 
 class ChiTietCayTrongScreen(QWidget):
     def __init__(self, activity_id=None):
@@ -98,48 +110,37 @@ class ChiTietCayTrongScreen(QWidget):
         if hasattr(self, 'prg_sinh_truong'): self.prg_sinh_truong.setValue(prg)
 
     def mo_popup_them_sua(self):
-        from screens.chinh_sua_cay_trong_popup import ChinhSuaCayTrongPopup
         self.popup = ChinhSuaCayTrongPopup(activity_id=self.activity_id)
         self.popup.show()
 
     # ĐIỀU HƯỚNG
     def ve_trang_chu(self):
-        from screens.home_nong_dan_screen import NongDanDashboardScreen
         switch_window(NongDanDashboardScreen())
 
     def mo_quan_ly_nong_trai(self):
-        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
         switch_window(DanhSachCayTrongScreen())
 
     def mo_giao_thuong(self):
-        from screens.dang_san_pham_screen import DangSanPhamScreen
         switch_window(DangSanPhamScreen())
 
     def mo_phan_tich(self):
-        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
         switch_window(PhanTichBaoCaoScreen())
 
     def mo_ho_so(self):
-        from screens.profile_nong_dan_screen import ProfileNongDanScreen
         switch_window(ProfileNongDanScreen())
 
     def quay_lai_danh_sach(self, event):
-        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
         switch_window(DanhSachCayTrongScreen())
 
     def mo_nhat_ky(self, event):
-        from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
         switch_window(NhatKyCanhTacScreen(activity_id=self.activity_id))
 
     def mo_goi_y(self, event):
-        from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
         switch_window(GoiYChamSocScreen(activity_id=self.activity_id))
 
     def dang_xuat(self):
         reply = QMessageBox.question(self, 'Xác nhận', 'Bạn có chắc chắn muốn đăng xuất?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            from utils.window_manager import set_current_user
             set_current_user(None)
-            from screens.login_screen import LoginScreen
             switch_window(LoginScreen())
