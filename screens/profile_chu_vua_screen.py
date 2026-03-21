@@ -3,10 +3,8 @@ from PyQt6 import uic
 
 from utils.window_manager import get_current_user, set_current_user, switch_window
 from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
-from screens.home_nong_dan_screen import NongDanDashboardScreen
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
 from screens.danh_sach_don_hang_screen import DanhSachDonHangScreen
 from screens.login_screen import LoginScreen
 
