@@ -7,6 +7,8 @@ from logic.logic_nguoi_dung import (
     cap_nhat_thong_tin_nguoi_dung
 )
 
+from screens.profile_chu_vua_screen import ProfileChuVua
+
 
 class EditProfileChuVuaScreen(QWidget):
     def __init__(self):
