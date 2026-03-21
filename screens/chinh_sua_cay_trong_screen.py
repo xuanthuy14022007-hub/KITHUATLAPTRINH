@@ -5,7 +5,7 @@ from PyQt6 import uic
 from datetime import datetime
 from utils.window_manager import get_current_user
 from logic.logic_mua_vu import them_vu_mua, sua_vu_mua, lay_chi_tiet_vu_mua, xoa_vu_mua
-from logic.logic_cay_trong import get_or_create_crop, lay_chi_tiet_cay
+from logic.logic_cay_trong import lay_chi_tiet_cay
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
 from utils.window_manager import switch_window
 from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
@@ -97,8 +97,6 @@ class ChinhSuaCayTrongPopup(QWidget):
         except ValueError:
             QMessageBox.warning(self, "Lỗi", "Ngày gieo trồng sai định dạng (dd/mm/yyyy)!")
             return
-            
-        crop_id = get_or_create_crop(ten_cay, loai_cay)
         
         if self.activity_id:
             vu_mua = lay_chi_tiet_vu_mua(self.activity_id)
