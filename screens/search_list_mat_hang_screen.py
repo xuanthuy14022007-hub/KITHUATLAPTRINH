@@ -3,7 +3,13 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_giao_thuong import lay_danh_sach_nong_san
-
+from screens.chi_tiet_nong_san_screen import ChiTietNongSanScreen
+from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+from screens.gio_hang_screen import GioHangScreen
+from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
+from utils.window_manager import set_current_user
+v
 
 class SearchListMatHangScreen(QWidget):
     def __init__(self):
@@ -89,32 +95,25 @@ class SearchListMatHangScreen(QWidget):
 
     def mo_chi_tiet_nong_san(self, activity_id):
         # Mở màn hình chi tiết và truyền ID
-        from screens.chi_tiet_nong_san_screen import ChiTietNongSanScreen
         screen = ChiTietNongSanScreen(activity_id)
         switch_window(screen)
 
     # ĐIỀU HƯỚNG
     def ve_trang_chu(self):
-        from screens.home_chu_vua_screen import ChuVuaDashboardScreen
         switch_window(ChuVuaDashboardScreen())
 
     def mo_ho_so(self):
-        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
         switch_window(ProfileChuVuaScreen())
 
     def mo_gio_hang(self):
-        from screens.gio_hang_screen import GioHangScreen
         switch_window(GioHangScreen())
 
     def mo_don_hang(self):
-        from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
         switch_window(DanhSachDonHangChuVuaScreen())
 
     def dang_xuat(self):
         reply = QMessageBox.question(self, 'Xác nhận', 'Bạn có chắc chắn muốn đăng xuất?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
-            from utils.window_manager import set_current_user
             set_current_user(None)
-            from screens.login_screen import LoginScreen
             switch_window(LoginScreen())
