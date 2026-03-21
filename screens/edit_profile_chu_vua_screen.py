@@ -1,13 +1,11 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
-from utils.window_manager import get_current_user
+from utils.window_manager import switch_window, get_current_user
 from logic.logic_nguoi_dung import (
     lay_thong_tin_nguoi_dung,
     cap_nhat_thong_tin_nguoi_dung
 )
-
-from utils.main import switch_window, ProfileChuVuaScreen
 
 
 class EditProfileChuVuaScreen(QWidget):
