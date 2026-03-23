@@ -1,9 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import switch_window
 from logic.logic_dang_nhap import reset_password
-from screens.login_screen import LoginScreen
 
 class NewPasswordScreen(QWidget):
     def __init__(self, username=None):
@@ -32,6 +30,7 @@ class NewPasswordScreen(QWidget):
         success = reset_password(self.username, self.txt_mat_khau_moi.text().strip())
         if success:
             QMessageBox.information(self, "Thành công", "Mật khẩu đã được cập nhật! Vui lòng đăng nhập lại.")
-            switch_window(LoginScreen())
+            from screens.login_screen import LoginScreen
+            switch_window(LoginScreen)
         else:
             QMessageBox.warning(self, "Lỗi", "Cập nhật thất bại!")
