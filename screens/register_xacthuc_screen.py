@@ -1,9 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import switch_window
-from screens.login_screen import LoginScreen
-from screens.nhap_profile_info_screen import NhapProfileInfoScreen
 
 class RegisterXacThucScreen(QWidget):
     def __init__(self, user_data=None):
@@ -40,7 +37,9 @@ class RegisterXacThucScreen(QWidget):
         if len(otp_code) < 6:
             QMessageBox.warning(self, "Lỗi", "Vui lòng nhập đầy đủ mã xác thực 6 số!")
             return
-        switch_window(NhapProfileInfoScreen(self.user_data))
+        from screens.nhap_profile_in4_screen import NhapProfileInfoScreen
+        switch_window(NhapProfileInfoScreen, user_data=self.user_data)
 
     def quay_lai_login(self, event):
-        switch_window(LoginScreen())
+        from screens.login_screen import LoginScreen
+        switch_window(LoginScreen)
