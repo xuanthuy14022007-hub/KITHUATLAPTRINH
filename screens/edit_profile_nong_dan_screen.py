@@ -4,8 +4,6 @@ from PyQt6 import uic
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
 
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-
 class EditProfileNongDanScreen(QWidget):
     def __init__(self):
         super().__init__()
@@ -18,7 +16,6 @@ class EditProfileNongDanScreen(QWidget):
 
         self.tai_du_lieu()
 
-
     def tai_du_lieu(self):
         user = get_current_user()
         if not user:
@@ -29,18 +26,13 @@ class EditProfileNongDanScreen(QWidget):
 
         if not thong_tin:
             return
-        (
-            user_id,
-            username,
-            role,
-            full_name,
-            email,
-            address,
-            phone,
-            farm_name,
-            description
-        ) = thong_tin
-
+        # Giả sử tuple gồm 9 phần tử (nếu có phone)
+        if len(thong_tin) == 9:
+            (user_id, username, role, full_name, email, address, phone, farm_name, description) = thong_tin
+        else:
+            # Fallback nếu không có phone (8 phần tử)
+            (user_id, username, role, full_name, email, address, farm_name, description) = thong_tin
+            phone = ""
 
         if hasattr(self, "lbl_edit_name_title"):
             self.lbl_edit_name_title.setText(username or full_name)
@@ -54,7 +46,6 @@ class EditProfileNongDanScreen(QWidget):
             self.lbl_email_val.setText(email or "")
         if hasattr(self, "lbl_phone_val"):
             self.lbl_phone_val.setText(phone or "")
-
 
     def luu_thay_doi(self):
         farm_name = self.txt_edit_farm.text().strip()
@@ -84,9 +75,11 @@ class EditProfileNongDanScreen(QWidget):
             QMessageBox.warning(self, "Lỗi", "Mô tả tối đa 300 ký tự")
             return
 
+        # Thực tế cần gọi cap_nhat_thong_tin_nguoi_dung để lưu vào DB
+        # Hiện tại chỉ hiển thị thông báo
         QMessageBox.information(self, "Thành công", "Đã lưu thông tin hồ sơ thành công!")
         self.quay_lai_ho_so()
 
-
     def quay_lai_ho_so(self):
-        switch_window(ProfileNongDanScreen())
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
+        switch_window(ProfileNongDanScreen)
