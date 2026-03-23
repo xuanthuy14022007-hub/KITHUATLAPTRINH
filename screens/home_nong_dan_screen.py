@@ -1,21 +1,15 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
 from logic.logic_nhat_ky import lay_nhat_ky_theo_mua_vu
-from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
-from screens.login_screen import LoginScreen
 
 class NongDanDashboardScreen(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi("ui_files/home_nong_dan.ui", self)
 
-        #ĐIỀU HƯỚNG SIDEBAR
+        # Kết nối sidebar
         if hasattr(self, 'btn_menu_quan_ly'):
             self.btn_menu_quan_ly.clicked.connect(self.mo_quan_ly_nong_trai)
         if hasattr(self, 'btn_menu_ho_so'):
@@ -32,10 +26,7 @@ class NongDanDashboardScreen(QWidget):
         if hasattr(self, 'lbl_btn_qlnt'):
             self.lbl_btn_qlnt.mousePressEvent = self.mo_quan_ly_nong_trai_lbl
 
-        #TẢI DỮ LIỆU
         self.tai_du_lieu()
-
-    #XỬ LÝ CHÍNH / LOGIC
 
     def tai_du_lieu(self):
         user = get_current_user()
@@ -95,7 +86,8 @@ class NongDanDashboardScreen(QWidget):
                 self.lbl_status_1.setStyleSheet(
                     f"background-color: {bg1}; color: {fg1}; border-radius: 15px; font-weight: bold; font-size: 10pt; border: none;"
                 )
-            if hasattr(self, 'progressBar'):  self.progressBar.setValue(prg1)
+            if hasattr(self, 'progressBar'):
+                self.progressBar.setValue(prg1)
         if len(vu_hien_thi) >= 2:
             vm2 = vu_hien_thi[1]
             area2 = round(vm2[3] / 10000, 1) if vm2[3] else 0
@@ -130,25 +122,30 @@ class NongDanDashboardScreen(QWidget):
         if len(cong_viec) >= 2 and hasattr(self, 'chk_cv2'):
             self.chk_cv2.setText(f" {cong_viec[1]}")
 
-    # ĐIỀU HƯỚNG / CHUYỂN MÀN HÌNH
-
+    # Điều hướng (lazy import để tránh vòng tròn)
     def mo_quan_ly_nong_trai_lbl(self, event):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
 
     def mo_quan_ly_nong_trai(self):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
 
     def mo_ho_so(self):
-        switch_window(ProfileNongDanScreen())
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
+        switch_window(ProfileNongDanScreen)
 
     def mo_giao_thuong(self):
-        switch_window(DangSanPhamScreen())
+        from screens.dang_san_pham_screen import DangSanPhamScreen
+        switch_window(DangSanPhamScreen)
 
     def mo_phan_tich(self):
-        switch_window(PhanTichBaoCaoScreen())
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+        switch_window(PhanTichBaoCaoScreen)
 
     def mo_goi_y(self, event):
-        switch_window(GoiYChamSocScreen())
+        from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+        switch_window(GoiYChamSocScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -157,5 +154,6 @@ class NongDanDashboardScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
