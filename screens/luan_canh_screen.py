@@ -1,24 +1,15 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua, lay_chi_tiet_vu_mua
 from logic.logic_luan_canh import goi_y_luan_canh
-from screens.home_nong_dan_screen import NongDanDashboardScreen
-from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
-from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
-from screens.dang_san_pham_screen import DangSanPhamScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-from screens.login_screen import LoginScreen
 
 class LuanCanhScreen(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi("ui_files/luan_canh.ui", self)
 
-        #ĐIỀU HƯỚNG SIDEBAR
+        # Kết nối sidebar
         if hasattr(self, 'btn_menu_trang_chu'):
             self.btn_menu_trang_chu.clicked.connect(self.ve_trang_chu)
         if hasattr(self, 'btn_menu_quan_ly'):
@@ -32,7 +23,7 @@ class LuanCanhScreen(QWidget):
         if hasattr(self, 'btn_dang_xuat'):
             self.btn_dang_xuat.clicked.connect(self.dang_xuat)
 
-        #ĐIỀU HƯỚNG TAB
+        # Kết nối tab
         if hasattr(self, 'lbl_tab_danh_sach'):
             self.lbl_tab_danh_sach.mousePressEvent = self.quay_lai_danh_sach
         if hasattr(self, 'lbl_tab_thong_tin'):
@@ -46,19 +37,23 @@ class LuanCanhScreen(QWidget):
 
         self.tai_du_lieu_luan_canh()
 
-    #XỬ LÝ CHÍNH / LOGIC
-
+    # ------------------- Xử lý dữ liệu -------------------
     def tai_du_lieu_luan_canh(self):
         user = get_current_user()
         if not user:
             return
         danh_sach_vu_mua = lay_danh_sach_vu_mua(user.get('user_id'))
         vu_hien_thi = danh_sach_vu_mua[:3]
+
         card_configs = [
-            {'card': 'card_1', 'lbl_title': 'lbl_title_1', 'grid': 'lbl_g1_{r}_{c}', 'goi_y': ['lbl_g1_n_0', 'lbl_g1_n_1', 'lbl_g1_n_2'], 'lido': 'txt_lido_1'},
-            {'card': 'card_2', 'lbl_title': 'lbl_title_2', 'grid': 'lbl_g2_{r}_{c}', 'goi_y': ['lbl_g2_n_0', 'lbl_g2_n_1', 'lbl_g2_n_2'], 'lido': 'txt_lido_2'},
-            {'card': 'card_3', 'lbl_title': 'lbl_title_3', 'grid': 'lbl_g3_{r}_{c}', 'goi_y': ['lbl_g3_n_0', 'lbl_g3_n_1', 'lbl_g3_n_2'], 'lido': 'txt_lido_3'},
+            {'card': 'card_1', 'lbl_title': 'lbl_title_1', 'grid': 'lbl_g1_{r}_{c}',
+             'goi_y': ['lbl_g1_n_0', 'lbl_g1_n_1', 'lbl_g1_n_2'], 'lido': 'txt_lido_1'},
+            {'card': 'card_2', 'lbl_title': 'lbl_title_2', 'grid': 'lbl_g2_{r}_{c}',
+             'goi_y': ['lbl_g2_n_0', 'lbl_g2_n_1', 'lbl_g2_n_2'], 'lido': 'txt_lido_2'},
+            {'card': 'card_3', 'lbl_title': 'lbl_title_3', 'grid': 'lbl_g3_{r}_{c}',
+             'goi_y': ['lbl_g3_n_0', 'lbl_g3_n_1', 'lbl_g3_n_2'], 'lido': 'txt_lido_3'},
         ]
+
         for i, cfg in enumerate(card_configs):
             card = getattr(self, cfg['card'], None)
             if not card:
@@ -70,13 +65,17 @@ class LuanCanhScreen(QWidget):
             vm = vu_hien_thi[i]
             crop_name = vm[1]
             plot_name = vm[2] or f'Thửa {i + 1}'
+
             if hasattr(self, cfg['lbl_title']):
                 getattr(self, cfg['lbl_title']).setText(plot_name)
+
+            # Cập nhật grid 3x3 (các label crop_name)
             for r in range(3):
                 for c in range(3):
                     lbl_name = cfg['grid'].format(r=r, c=c)
                     if hasattr(self, lbl_name):
                         getattr(self, lbl_name).setText(crop_name)
+
             ds_goi_y = self._lay_goi_y_cho_vu_mua(vm[0])
             for j, lbl_name in enumerate(cfg['goi_y']):
                 if hasattr(self, lbl_name):
@@ -87,6 +86,7 @@ class LuanCanhScreen(QWidget):
                         )
                     else:
                         getattr(self, lbl_name).setText('—')
+
             if hasattr(self, cfg['lido']):
                 getattr(self, cfg['lido']).setText(self._tao_ly_do(crop_name, ds_goi_y))
 
@@ -103,30 +103,46 @@ class LuanCanhScreen(QWidget):
         if not ds_goi_y:
             return f"Nên luân canh sau khi thu hoạch {crop_hien_tai} để cải thiện độ màu mỡ của đất và giảm nguy cơ sâu bệnh tích tụ."
         ten_goi_y = ', '.join([g[1] for g in ds_goi_y[:3]])
-        category  = ds_goi_y[0][2] if ds_goi_y[0][2] else 'loại cây khác'
+        category = ds_goi_y[0][2] if ds_goi_y[0][2] else 'loại cây khác'
         return (f"Sau khi trồng {crop_hien_tai}, nên chuyển sang {ten_goi_y} ({category}) "
                 f"để cân bằng dinh dưỡng đất, hạn chế sâu bệnh tích lũy và tăng năng suất cho vụ tiếp theo.")
 
-    #ĐIỀU HƯỚNG / CHUYỂN MÀN HÌNH
-
+    # ------------------- Điều hướng (lazy import) -------------------
     def ve_trang_chu(self):
-        switch_window(NongDanDashboardScreen())
+        from screens.home_nong_dan_screen import NongDanDashboardScreen
+        switch_window(NongDanDashboardScreen)
+
     def mo_quan_ly_nong_trai(self):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_giao_thuong(self):
-        switch_window(DangSanPhamScreen())
+        from screens.dang_san_pham_screen import DangSanPhamScreen
+        switch_window(DangSanPhamScreen)
+
     def mo_phan_tich(self):
-        switch_window(PhanTichBaoCaoScreen())
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+        switch_window(PhanTichBaoCaoScreen)
+
     def mo_ho_so(self):
-        switch_window(ProfileNongDanScreen())
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
+        switch_window(ProfileNongDanScreen)
+
     def quay_lai_danh_sach(self, event):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_thong_tin_chi_tiet(self, event):
-        switch_window(ChiTietCayTrongScreen())
+        from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+        switch_window(ChiTietCayTrongScreen)
+
     def mo_nhat_ky(self, event):
-        switch_window(NhatKyCanhTacScreen())
+        from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+        switch_window(NhatKyCanhTacScreen)
+
     def mo_goi_y_cham_soc(self, event):
-        switch_window(GoiYChamSocScreen())
+        from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+        switch_window(GoiYChamSocScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -135,5 +151,6 @@ class LuanCanhScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
