@@ -553,24 +553,24 @@ QComboBox QAbstractItemView {
     outline: none;
 }</string>
                </property>
-               <item>
+                              <item>
+                <property name="text">
+                 <string>Tất cả</string>
+                </property>
+               </item>
+<item>
                 <property name="text">
                  <string>Chờ xác nhận</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>Đã xác nhận</string>
+                 <string>Xác nhận</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>Đang giao hàng</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Đã từ chối</string>
+                 <string>Hủy đơn</string>
                 </property>
                </item>
               </widget>
@@ -888,7 +888,7 @@ Hôm nay lúc 14:30</string>
                      <string notr="true">background-color: #BDE08B; color: #1C1C1C; padding: 4px 12px; border-radius: 6px; font-weight: bold; font-size: 10pt;</string>
                     </property>
                     <property name="text">
-                     <string>Đã xác nhận</string>
+                     <string>Xác nhận</string>
                     </property>
                    </widget>
                   </item>
@@ -1132,7 +1132,7 @@ Hôm nay lúc 14:30</string>
                    <string notr="true">color: #4A4A4A; font-size: 11pt;</string>
                   </property>
                   <property name="text">
-                   <string>Lí do: Mặt hàng hiện tại đang hết hàng</string>
+                   <string></string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
