@@ -1,21 +1,14 @@
 from datetime import datetime
-
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import switch_window, get_current_user
-from screens.home_chu_vua_screen import ChuVuaDashBoardScreen
-from screens.search_list_mat_hang_screen import SearchListMatHangScreen
-from screens.profile_chu_vua_screen import ProfileChuVuaScreen
-from screens.gio_hang_screen import GioHangScreen
-from screens.login_screen import LoginScreen
+from database.database_connector import get_connection
 
 BADGE_CONFIG = {
-    'Chờ xác nhận': ('#BDE08B', '#1C1C1C'),
-    'Xác nhận':     ('#A6CE89', '#1C1C1C'),
-    'Hủy đơn':      ('#E0E0E0', '#888888'),
+    'Chờ xác nhận': ('#F48FB1', '#1C1C1C'),   # Hồng - đen
+    'Xác nhận':     ('#4CAF50', '#FFFFFF'),   # Xanh lá - trắng
+    'Hủy đơn':      ('#F48FB1', '#1C1C1C'),   # Hồng - đen
 }
-
 
 class DanhSachDonHangChuVuaScreen(QWidget):
     def __init__(self):
@@ -60,7 +53,6 @@ class DanhSachDonHangChuVuaScreen(QWidget):
 
     def _lay_don_hang_merchant(self, merchant_id):
         try:
-            from database.database_connector import get_connection
             conn = get_connection()
             cursor = conn.cursor()
             cursor.execute("""
@@ -93,7 +85,6 @@ class DanhSachDonHangChuVuaScreen(QWidget):
 
     def _dem_gio_hang(self, merchant_id):
         try:
-            from database.database_connector import get_connection
             conn = get_connection()
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM Cart WHERE merchant_id = ?", (merchant_id,))
@@ -103,45 +94,157 @@ class DanhSachDonHangChuVuaScreen(QWidget):
         except Exception:
             return 0
 
+    def clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+            elif item.layout() is not None:
+                self.clear_layout(item.layout())
+
     def _do_du_lieu_len_ui(self, danh_sach):
-        groups = [
-            {'group': 'group_order_1', 'lbl_farm': 'lbl_farm1', 'lbl_badge': 'lbl_badge1', 'lbl_name': 'lbl_name1', 'lbl_stock': 'lbl_stock1', 'lbl_p_val': 'lbl_p_val1', 'lbl_q_val': 'lbl_q_val1', 'lbl_t_val': 'lbl_t_val1', 'lbl_summary': 'lbl_summary1'},
-            {'group': 'group_order_2', 'lbl_farm': 'lbl_farm2', 'lbl_badge': 'lbl_badge2', 'lbl_name': 'lbl_name2', 'lbl_stock': 'lbl_stock2', 'lbl_p_val': 'lbl_p_val2', 'lbl_q_val': 'lbl_q_val2', 'lbl_t_val': 'lbl_t_val2', 'lbl_summary': 'lbl_summary2'},
-        ]
-        for i, cfg in enumerate(groups):
-            group = getattr(self, cfg['group'], None)
-            if not group: continue
-            if i >= len(danh_sach):
-                group.setVisible(False)
-                continue
-            group.setVisible(True)
-            don = danh_sach[i]
-            if hasattr(self, cfg['lbl_farm']):
-                getattr(self, cfg['lbl_farm']).setText(f"🏪 {don['farm_name']}")
-            if hasattr(self, cfg['lbl_badge']):
-                badge_w = getattr(self, cfg['lbl_badge'])
-                badge_w.setText(don['status'])
-                bg, fg = BADGE_CONFIG.get(don['status'], ('#E0E0E0', '#1C1C1C'))
-                badge_w.setStyleSheet(f"background-color: {bg}; color: {fg}; border-radius: 4px; padding: 4px 15px; font-weight: bold; font-size: 10pt; border: none;")
-            if hasattr(self, cfg['lbl_name']):
-                getattr(self, cfg['lbl_name']).setText(don['crop_name'])
-            if hasattr(self, cfg['lbl_stock']):
-                try:
-                    ngay = datetime.strptime(don['order_date'], '%Y-%m-%d').strftime('%d/%m/%Y')
-                except Exception:
-                    ngay = don['order_date']
-                getattr(self, cfg['lbl_stock']).setText(f"Ngày đặt: {ngay}")
-            if hasattr(self, cfg['lbl_p_val']):
-                getattr(self, cfg['lbl_p_val']).setText(f"{don['unit_price']:,.0f} VND / kg")
-            if hasattr(self, cfg['lbl_q_val']):
-                getattr(self, cfg['lbl_q_val']).setText(f"{don['quantity']:,.0f} kg")
-            if hasattr(self, cfg['lbl_t_val']):
-                getattr(self, cfg['lbl_t_val']).setText(f"{don['total']:,.0f} VND")
-            if hasattr(self, cfg['lbl_summary']):
-                getattr(self, cfg['lbl_summary']).setText(
-                    f'<html><body>Tổng số tiền ({don["so_san_pham"]} sản phẩm): '
-                    f'<span style="font-weight:900; color:#1C1C1C; font-size:16pt;">{don["total"]:,.0f} VND</span></body></html>'
-                )
+        if not hasattr(self, 'verticalLayout_scroll'):
+            return
+            
+        # Tạm thời chỉ xóa các group order tĩnh nếu chúng còn tồn tại
+        if hasattr(self, 'group_order_1') and self.group_order_1:
+            self.group_order_1.deleteLater()
+            self.group_order_1 = None
+        if hasattr(self, 'group_order_2') and self.group_order_2:
+            self.group_order_2.deleteLater()
+            self.group_order_2 = None
+            
+        # Tìm widget order_list_container, nếu chưa có thì tạo
+        if not hasattr(self, 'order_list_container'):
+            from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+            from PyQt6.QtCore import Qt
+            
+            self.order_list_container = QFrame()
+            self.order_list_layout = QVBoxLayout(self.order_list_container)
+            self.order_list_layout.setSpacing(20)
+            self.verticalLayout_scroll.insertWidget(2, self.order_list_container) # Insert after search/filter
+            self.verticalLayout_scroll.addStretch()
+
+        from PyQt6.QtWidgets import QFrame, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+        from PyQt6.QtCore import Qt
+        
+        self.clear_layout(self.order_list_layout)
+
+        if not danh_sach:
+            lbl_empty = QLabel("Không có đơn hàng nào khớp với tìm kiếm.")
+            lbl_empty.setStyleSheet("font-size: 14pt; color: #4A4A4A; padding: 20px;")
+            lbl_empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.order_list_layout.addWidget(lbl_empty)
+            return
+
+        for don in danh_sach:
+            # Main group frame
+            group_frame = QFrame()
+            group_frame.setStyleSheet("QFrame { background-color: #FFFFFF; border: 1px solid #A0A0A0; border-radius: 10px; }")
+            group_layout = QVBoxLayout(group_frame)
+            group_layout.setContentsMargins(0, 0, 0, 0)
+            group_layout.setSpacing(0)
+
+            # Header
+            header_frame = QFrame()
+            header_frame.setMinimumHeight(50)
+            header_frame.setStyleSheet("background-color: #619B5E; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom: 1px solid #A0A0A0; border-left: none; border-right: none; border-top: none;")
+            header_layout = QHBoxLayout(header_frame)
+            header_layout.setContentsMargins(20, 0, 20, 0)
+
+            lbl_farm = QLabel(f"🏪 {don['farm_name']}")
+            lbl_farm.setStyleSheet("color: white; font-size: 13pt; font-weight: bold; border: none; background: transparent;")
+            
+            lbl_badge = QLabel(don['status'])
+            bg, fg = BADGE_CONFIG.get(don['status'], ('#E0E0E0', '#1C1C1C'))
+            lbl_badge.setStyleSheet(f"background-color: {bg}; color: {fg}; border-radius: 4px; padding: 4px 15px; font-weight: bold; font-size: 10pt; border: none;")
+
+            header_layout.addWidget(lbl_farm)
+            header_layout.addStretch()
+            header_layout.addWidget(lbl_badge)
+
+            # Item body
+            item_frame = QFrame()
+            item_frame.setStyleSheet("border-bottom: 1px solid #E0E0E0; border-top: none; border-left: none; border-right: none;")
+            item_layout = QHBoxLayout(item_frame)
+            item_layout.setContentsMargins(25, 15, 25, 15)
+            item_layout.setSpacing(20)
+
+            img_lbl = QLabel("🖼️")
+            img_lbl.setFixedSize(80, 80)
+            img_lbl.setStyleSheet("background-color: #F0F0F0; border: 1px solid #A0A0A0; border-radius: 8px; font-size: 24pt;")
+            img_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            name_stock_layout = QVBoxLayout()
+            name_stock_layout.setSpacing(5)
+            lbl_name = QLabel(don['crop_name'])
+            lbl_name.setStyleSheet("font-size: 15pt; font-weight: bold; color: #1C1C1C; border: none;")
+            
+            try:
+                ngay = datetime.strptime(don['order_date'], '%Y-%m-%d').strftime('%d/%m/%Y')
+            except Exception:
+                ngay = don['order_date']
+            lbl_stock = QLabel(f"Ngày đặt: {ngay}")
+            lbl_stock.setStyleSheet("font-size: 11pt; color: #4A4A4A; border: none;")
+            
+            name_stock_layout.addWidget(lbl_name)
+            name_stock_layout.addWidget(lbl_stock)
+            
+            price_layout = QVBoxLayout()
+            lbl_p_title = QLabel("Đơn giá")
+            lbl_p_title.setStyleSheet("font-weight: bold; color: #1C1C1C; border: none;")
+            lbl_p_val = QLabel(f"{don['unit_price']:,.0f} VND / kg")
+            lbl_p_val.setStyleSheet("border: none;")
+            price_layout.addWidget(lbl_p_title, alignment=Qt.AlignmentFlag.AlignCenter)
+            price_layout.addWidget(lbl_p_val, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            qty_layout = QVBoxLayout()
+            lbl_q_title = QLabel("Số lượng")
+            lbl_q_title.setStyleSheet("font-weight: bold; color: #1C1C1C; border: none;")
+            lbl_q_val = QLabel(f"{don['quantity']:,.0f} kg")
+            lbl_q_val.setStyleSheet("border: none;")
+            qty_layout.addWidget(lbl_q_title, alignment=Qt.AlignmentFlag.AlignCenter)
+            qty_layout.addWidget(lbl_q_val, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            total_layout = QVBoxLayout()
+            lbl_t_title = QLabel("Thành tiền")
+            lbl_t_title.setStyleSheet("font-weight: bold; color: #1C1C1C; border: none;")
+            lbl_t_val = QLabel(f"{don['total']:,.0f} VND")
+            lbl_t_val.setStyleSheet("font-weight: 900; font-size: 11pt; border: none;")
+            total_layout.addWidget(lbl_t_title, alignment=Qt.AlignmentFlag.AlignCenter)
+            total_layout.addWidget(lbl_t_val, alignment=Qt.AlignmentFlag.AlignCenter)
+
+            item_layout.addWidget(img_lbl)
+            item_layout.addLayout(name_stock_layout)
+            item_layout.addStretch()
+            item_layout.addLayout(price_layout)
+            item_layout.addStretch()
+            item_layout.addLayout(qty_layout)
+            item_layout.addStretch()
+            item_layout.addLayout(total_layout)
+
+            # Footer
+            footer_frame = QFrame()
+            footer_frame.setMinimumHeight(60)
+            footer_frame.setStyleSheet("border-top: 1px solid #E0E0E0; border-bottom: none; border-left: none; border-right: none;")
+            footer_layout = QHBoxLayout(footer_frame)
+            footer_layout.setContentsMargins(20, 0, 25, 0)
+
+            lbl_summary = QLabel(
+                f'<html><body>Tổng số tiền ({don["so_san_pham"]} sản phẩm): '
+                f'<span style="font-weight:900; color:#1C1C1C; font-size:16pt;">{don["total"]:,.0f} VND</span></body></html>'
+            )
+            lbl_summary.setStyleSheet("color: #4A4A4A; font-size: 12pt; border: none;")
+            
+            footer_layout.addStretch()
+            footer_layout.addWidget(lbl_summary)
+
+            group_layout.addWidget(header_frame)
+            group_layout.addWidget(item_frame)
+            group_layout.addWidget(footer_frame)
+
+            self.order_list_layout.addWidget(group_frame)
 
     def loc_don_hang(self):
         tu_khoa = self.txt_search.text().strip().lower() if hasattr(self, 'txt_search') else ''
@@ -153,16 +256,28 @@ class DanhSachDonHangChuVuaScreen(QWidget):
         ]
         self._do_du_lieu_len_ui(ket_qua)
 
+    # ------------------------------------------------------------
+    # Điều hướng – lazy import để tránh vòng tròn
+    # ------------------------------------------------------------
     def ve_trang_chu(self):
-        switch_window(ChuVuaDashboardScreen())
+        from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+        switch_window(ChuVuaDashboardScreen)
+
     def mo_giao_thuong(self):
-        switch_window(SearchListMatHangScreen())
+        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+        switch_window(SearchListMatHangScreen)
+
     def mo_ho_so(self):
-        switch_window(ProfileChuVuaScreen())
+        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+        switch_window(ProfileChuVuaScreen)
+
     def quay_lai(self):
-        switch_window(SearchListMatHangScreen())
+        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+        switch_window(SearchListMatHangScreen)
+
     def mo_gio_hang(self):
-        switch_window(GioHangScreen())
+        from screens.gio_hang_screen import GioHangScreen
+        switch_window(GioHangScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -171,5 +286,6 @@ class DanhSachDonHangChuVuaScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
