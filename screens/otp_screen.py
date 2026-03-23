@@ -3,7 +3,6 @@ from PyQt6 import uic
 
 from utils.window_manager import switch_window
 from PyQt6.QtWidgets import QMessageBox
-from screens.new_password_screen import NewPasswordScreen
 
 class OtpScreen(QWidget):
     def __init__(self, username=None):
@@ -36,5 +35,5 @@ class OtpScreen(QWidget):
         if len(otp_code) < 6:
             QMessageBox.warning(self, "Lỗi", "Vui lòng nhập đủ 6 số OTP!")
             return
-            
+        from screens.new_password_screen import NewPasswordScreen
         switch_window(NewPasswordScreen(self.username))
