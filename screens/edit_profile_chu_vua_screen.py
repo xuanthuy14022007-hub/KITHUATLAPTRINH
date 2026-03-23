@@ -1,14 +1,10 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import switch_window, get_current_user
 from logic.logic_nguoi_dung import (
     lay_thong_tin_nguoi_dung,
     cap_nhat_thong_tin_nguoi_dung
 )
-
-from screens.profile_chu_vua_screen import ProfileChuVua
-
 
 class EditProfileChuVuaScreen(QWidget):
     def __init__(self):
@@ -41,20 +37,18 @@ class EditProfileChuVuaScreen(QWidget):
             description
         ) = thong_tin
 
-
         if hasattr(self, "lbl_edit_name_title"):
             self.lbl_edit_name_title.setText(full_name or "")
         if hasattr(self, "lbl_email_val"):
             self.lbl_email_val.setText(email or "")
         if hasattr(self, "lbl_phone_val"):
-            self.lbl_phone_val.setText("0123456789")
+            self.lbl_phone_val.setText("0123456789")  # Giả lập, có thể lấy từ db nếu có
         if hasattr(self, "lbl_addr_val"):
             self.lbl_addr_val.setText(address or "")
         if hasattr(self, "txt_edit_farm"):
             self.txt_edit_farm.setText(farm_name or "")
         if hasattr(self, "txt_edit_desc"):
             self.txt_edit_desc.setPlainText(description or "")
-
 
     def luu_thay_doi(self):
         user = get_current_user()
@@ -83,8 +77,25 @@ class EditProfileChuVuaScreen(QWidget):
             QMessageBox.warning(self, "Lỗi", "SĐT không hợp lệ")
             return
 
+        # Cập nhật thông tin (nếu cần)
+        try:
+            cap_nhat_thong_tin_nguoi_dung(
+                user_id,
+                user.get("username"),
+                user.get("role"),
+                full_name,
+                email,
+                address,
+                farm_name,
+                description
+            )
+        except Exception as e:
+            QMessageBox.critical(self, "Lỗi", f"Không thể lưu: {str(e)}")
+            return
+
         QMessageBox.information(self, "Thành công", "Đã lưu thông tin hồ sơ thành công!")
         self.quay_lai_ho_so()
 
     def quay_lai_ho_so(self):
-        switch_window(ProfileChuVuaScreen())
+        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+        switch_window(ProfileChuVuaScreen)
