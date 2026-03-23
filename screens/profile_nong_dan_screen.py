@@ -1,20 +1,14 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import get_current_user, set_current_user, switch_window
 from logic.logic_nguoi_dung import lay_thong_tin_nguoi_dung
-from screens.home_nong_dan_screen import NongDanDashboardScreen
-from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.dang_san_pham_screen import DangSanPhamScreen
-from screens.edit_profile_nong_dan_screen import EditProfileNongDanScreen
-from screens.login_screen import LoginScreen
 
 class ProfileNongDanScreen(QWidget):
-
     def __init__(self):
         super().__init__()
         uic.loadUi("ui_files/profile_nong_dan.ui", self)
+
+        # Kết nối các nút
         if hasattr(self, "btn_menu_trang_chu"):
             self.btn_menu_trang_chu.clicked.connect(self.ve_trang_chu)
         if hasattr(self, "btn_menu_quan_ly"):
@@ -27,7 +21,7 @@ class ProfileNongDanScreen(QWidget):
             self.btn_dang_xuat.clicked.connect(self.dang_xuat)
         if hasattr(self, "btn_chinh_sua"):
             self.btn_chinh_sua.clicked.connect(self.mo_chinh_sua)
-        
+
         self.tai_du_lieu()
 
     def tai_du_lieu(self):
@@ -59,36 +53,40 @@ class ProfileNongDanScreen(QWidget):
         if hasattr(self, "lbl_email_val"):
             self.lbl_email_val.setText(email or "")
         if hasattr(self, "lbl_phone_val"):
-            self.lbl_phone_val.setText("0123456789")
+            self.lbl_phone_val.setText("0123456789")  # placeholder, có thể lấy từ db nếu có
         if hasattr(self, "lbl_addr_val"):
             self.lbl_addr_val.setText(address or "")
         if hasattr(self, "lbl_mota_desc"):
             self.lbl_mota_desc.setText(description or "")
 
     def mo_chinh_sua(self):
-        switch_window(EditProfileNongDanScreen())
+        from screens.edit_profile_nong_dan_screen import EditProfileNongDanScreen
+        switch_window(EditProfileNongDanScreen)
 
     def ve_trang_chu(self):
-        switch_window(NongDanDashboardScreen())
+        from screens.home_nong_dan_screen import NongDanDashboardScreen
+        switch_window(NongDanDashboardScreen)
 
     def mo_quan_ly_nong_trai(self):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
 
     def mo_giao_thuong(self):
-        switch_window(DangSanPhamScreen())
+        from screens.dang_san_pham_screen import DangSanPhamScreen
+        switch_window(DangSanPhamScreen)
 
     def mo_phan_tich(self):
-        switch_window(PhanTichBaoCaoScreen())
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+        switch_window(PhanTichBaoCaoScreen)
 
     def dang_xuat(self):
-
         reply = QMessageBox.question(
             self,
             "Xác nhận",
             "Bạn có chắc chắn muốn đăng xuất?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
-
         if reply == QMessageBox.StandardButton.Yes:
             set_current_user(None)
-            switch_window(LoginScreen())
+            from screens.login_screen import LoginScreen
+            switch_window(LoginScreen)
