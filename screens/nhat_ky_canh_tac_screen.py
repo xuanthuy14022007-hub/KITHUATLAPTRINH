@@ -6,14 +6,6 @@ from PyQt6 import uic
 from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
 from logic.logic_nhat_ky import lay_nhat_ky_theo_mua_vu, them_nhat_ky, ghi_nhan_thu_hoach
-from screen.home_nong_dan_screen import NongDanDashboardScreen 
-from screen.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screen.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
-from screen.dang_san_phan_screen import DangSanPhamScreen
-from screen.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screen.profile_nong_dan_screen import ProfileNongDanScreen
-from screen.goi_y_cham_soc_screen import GoiYChamSocScreen
-from screen.login_screen import LoginScreen
 
 BADGE_COLOR_MAP = {
     'Gieo trồng': ('#F8E5E5', '#D66D6D'),
@@ -36,7 +28,7 @@ class NhatKyCanhTacScreen(QWidget):
             if ds:
                 self.activity_id = ds[0][0]
 
-        #ĐIỀU HƯỚNG SIDEBAR
+        # Kết nối sidebar
         if hasattr(self, 'btn_menu_trang_chu'):
             self.btn_menu_trang_chu.clicked.connect(self.ve_trang_chu)
         if hasattr(self, 'btn_menu_quan_ly'):
@@ -50,7 +42,7 @@ class NhatKyCanhTacScreen(QWidget):
         if hasattr(self, 'btn_dang_xuat'):
             self.btn_dang_xuat.clicked.connect(self.dang_xuat)
 
-        #ĐIỀU HƯỚNG TAB NGANG
+        # Kết nối tab
         if hasattr(self, 'lbl_tab_danh_sach'):
             self.lbl_tab_danh_sach.mousePressEvent = self.quay_lai_danh_sach
         if hasattr(self, 'lbl_tab_thong_tin'):
@@ -58,7 +50,7 @@ class NhatKyCanhTacScreen(QWidget):
         if hasattr(self, 'lbl_tab_goi_y'):
             self.lbl_tab_goi_y.mousePressEvent = self.mo_goi_y
 
-        #NÚT LƯU VÀ HỦY
+        # Nút lưu và hủy
         if hasattr(self, 'btn_luu'):
             self.btn_luu.clicked.connect(self.luu_nhat_ky)
         if hasattr(self, 'btn_huy'):
@@ -69,7 +61,7 @@ class NhatKyCanhTacScreen(QWidget):
 
         self.tai_danh_sach_nhat_ky()
 
-    #XỬ LÝ CHÍNH / LOGIC
+    # XỬ LÝ CHÍNH / LOGIC
     def tai_danh_sach_nhat_ky(self):
         if not self.activity_id:
             return
@@ -147,23 +139,38 @@ class NhatKyCanhTacScreen(QWidget):
         if hasattr(self, 'txt_ngay'):
             self.txt_ngay.setText(datetime.now().strftime('%d/%m/%Y'))
 
-    #ĐIỀU HƯỚNG / CHUYỂN MÀN HÌNH
+    # ĐIỀU HƯỚNG / CHUYỂN MÀN HÌNH (lazy import)
     def ve_trang_chu(self):
-        switch_window(NongDanDashboardScreen())
+        from screens.home_nong_dan_screen import NongDanDashboardScreen
+        switch_window(NongDanDashboardScreen)
+
     def mo_quan_ly_nong_trai(self):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_giao_thuong(self):
-        switch_window(DangSanPhamScreen())
+        from screens.dang_san_pham_screen import DangSanPhamScreen
+        switch_window(DangSanPhamScreen)
+
     def mo_phan_tich(self):
-        switch_window(PhanTichBaoCaoScreen())
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+        switch_window(PhanTichBaoCaoScreen)
+
     def mo_ho_so(self):
-        switch_window(ProfileNongDanScreen())
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
+        switch_window(ProfileNongDanScreen)
+
     def quay_lai_danh_sach(self, event):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_thong_tin_chi_tiet(self, event):
-        switch_window(ChiTietCayTrongScreen())
+        from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+        switch_window(ChiTietCayTrongScreen)
+
     def mo_goi_y(self, event):
-        switch_window(GoiYChamSocScreen())
+        from screens.goi_y_cham_soc_screen import GoiYChamSocScreen
+        switch_window(GoiYChamSocScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -172,5 +179,6 @@ class NhatKyCanhTacScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
