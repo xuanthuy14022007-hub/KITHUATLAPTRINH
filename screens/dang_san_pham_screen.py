@@ -2,16 +2,10 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 from database.database_connector import get_connection
-from logic.giao_thuong import dang_ban
+from logic.logic_giao_thuong import dang_ban
 from utils.window_manager import switch_window, get_current_user, set_current_user
 
-# Import các màn hình khác (đường dẫn tương đối từ thư mục gốc)
-from screens.home_nong_dan_screen import NongDanDashboardScreen
-from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.danh_sach_don_hang_screen import DanhSachDonHangScreen
-from screens.login_screen import LoginScreen
+# KHÔNG import các màn hình khác ở đầu file
 
 class DangSanPhamScreen(QWidget):
     """
@@ -26,6 +20,7 @@ class DangSanPhamScreen(QWidget):
         # Lấy thông tin người dùng hiện tại
         self.current_user = get_current_user()
         if not self.current_user:
+            from screens.login_screen import LoginScreen
             switch_window(LoginScreen)
             return
         self.farmer_id = self.current_user['user_id']
@@ -100,8 +95,8 @@ class DangSanPhamScreen(QWidget):
     # Hiển thị danh sách chưa đăng bán (phần trên)
     # ------------------------------------------------------------
     def hien_thi_chua_dang(self):
-        """Hiển thị tối đa 5 sản phẩm chưa đăng bán (item_h1..item_h5)."""
-        for i in range(1, 6):
+        """Hiển thị các sản phẩm chưa đăng bán (item_h1..item_h20)."""
+        for i in range(1, 21):
             item_frame = getattr(self, f"item_h{i}", None)
             if not item_frame:
                 continue
@@ -127,7 +122,7 @@ class DangSanPhamScreen(QWidget):
     # Hiển thị danh sách đã đăng bán (phần dưới)
     # ------------------------------------------------------------
     def hien_thi_da_dang(self):
-        """Hiển thị tối đa 5 sản phẩm đã đăng bán (item_1..item_5)."""
+        """Hiển thị các sản phẩm đã đăng bán (item_1..item_20)."""
         # Cập nhật số lượng sản phẩm trên header
         tong_sp = len(self.ds_da_dang)
         if hasattr(self, 'lbl_list_subtitle'):
@@ -135,7 +130,7 @@ class DangSanPhamScreen(QWidget):
         if hasattr(self, 'lbl_badge_header'):
             self.lbl_badge_header.setText(f"{tong_sp} sản phẩm")
 
-        for i in range(1, 6):
+        for i in range(1, 21):
             item_frame = getattr(self, f"item_{i}", None)
             if not item_frame:
                 continue
@@ -175,7 +170,7 @@ class DangSanPhamScreen(QWidget):
         co_san_pham_duoc_chon = False
         loi = False
 
-        for i in range(1, 6):
+        for i in range(1, 21):
             chk = getattr(self, f"chk_h{i}", None)
             if not chk or not chk.isVisible() or not chk.isChecked():
                 continue
@@ -209,9 +204,9 @@ class DangSanPhamScreen(QWidget):
                 QMessageBox.warning(self, "Lỗi", f"Không thể đăng bán {sp['crop_name']}. Vui lòng thử lại.")
                 loi = True
 
-        if co_san_pham_duoc_chon and not loi:
+        if co_san_pham_duoc_chon:
             QMessageBox.information(self, "Thành công", "Đã đăng bán các sản phẩm được chọn!")
-            self.tai_du_lieu()   # refresh
+            self.tai_du_lieu()   # Luôn refresh khi có sản phẩm đăng bán thành công
         elif not co_san_pham_duoc_chon and not loi:
             QMessageBox.warning(self, "Cảnh báo", "Vui lòng chọn ít nhất một sản phẩm và nhập giá bán.")
 
@@ -248,18 +243,23 @@ class DangSanPhamScreen(QWidget):
     # Điều hướng sidebar
     # ------------------------------------------------------------
     def ve_trang_chu(self):
+        from screens.home_nong_dan_screen import NongDanDashboardScreen
         switch_window(NongDanDashboardScreen)
 
     def mo_quan_ly_nong_trai(self):
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
         switch_window(DanhSachCayTrongScreen)
 
     def mo_ho_so(self):
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
         switch_window(ProfileNongDanScreen)
 
     def mo_phan_tich(self):
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
         switch_window(PhanTichBaoCaoScreen)
 
     def mo_quan_ly_don(self, event):
+        from screens.danh_sach_don_hang_screen import DanhSachDonHangScreen
         switch_window(DanhSachDonHangScreen)
 
     def dang_xuat(self):
@@ -270,4 +270,5 @@ class DangSanPhamScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             set_current_user(None)
+            from screens.login_screen import LoginScreen
             switch_window(LoginScreen)
