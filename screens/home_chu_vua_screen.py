@@ -4,9 +4,6 @@ from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
 from utils.window_manager import get_current_user, switch_window
-from screens.profile_chu_vua_screen import ProfileChuVuaScreen
-from screens.search_list_mat_hang_screen import SearchListMatHangScreen
-from screens.login_screen import LoginScreen
 
 class ChuVuaDashboardScreen(QWidget):
     def __init__(self):
@@ -137,14 +134,18 @@ class ChuVuaDashboardScreen(QWidget):
         except Exception:
             return ('—', 0)
 
+    # ========== Điều hướng (lazy import) ==========
     def ve_trang_chu(self):
-        switch_window(ChuVuaDashboardScreen())
-        
+        # Không cần chuyển vì đã ở trang chủ, nhưng vẫn có thể reload
+        self.tai_du_lieu()
+
     def mo_ho_so(self):
-        switch_window(ProfileChuVuaScreen())
-        
+        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+        switch_window(ProfileChuVuaScreen)
+
     def mo_giao_thuong(self):
-        switch_window(SearchListMatHangScreen())
+        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+        switch_window(SearchListMatHangScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -153,5 +154,6 @@ class ChuVuaDashboardScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
