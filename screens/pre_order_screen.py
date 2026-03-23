@@ -1,20 +1,8 @@
 from datetime import date
-
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
-from utils.window_manager import get_current_user
+from utils.window_manager import get_current_user, switch_window
 from logic.logic_giao_thuong import thanh_toan_gio_hang
-from logic.main import (
-    switch_window,
-    ChuVuaDashboardScreen,
-    SearchListMatHangScreen,
-    ProfileChuVuaScreen,
-    GioHangScreen,
-    DanhSachDonHangChuVuaScreen,
-    LoginScreen,
-)
-
 
 class PreOrderScreen(QWidget):
     def __init__(self):
@@ -86,7 +74,8 @@ class PreOrderScreen(QWidget):
             ('item_3', 'name_3', 'qty_3', 'total_3'),
         ]):
             frame = getattr(self, frame_name, None)
-            if not frame: continue
+            if not frame:
+                continue
             if i >= len(gio_hang):
                 frame.setVisible(False)
                 continue
@@ -95,11 +84,16 @@ class PreOrderScreen(QWidget):
             quantity, don_gia = item[2], item[3]
             thanh_tien = quantity * don_gia
             tong_tien += thanh_tien
-            if hasattr(self, lbl_name):  getattr(self, lbl_name).setText(item[1])
+            if hasattr(self, lbl_name):
+                getattr(self, lbl_name).setText(item[1])
             if hasattr(self, lbl_qty):
-                getattr(self, lbl_qty).setText(f'<html><body>{quantity:,.0f} <span style="font-size:10pt;">kg</span></body></html>')
+                getattr(self, lbl_qty).setText(
+                    f'<html><body>{quantity:,.0f} <span style="font-size:10pt;">kg</span></body></html>'
+                )
             if hasattr(self, lbl_total):
-                getattr(self, lbl_total).setText(f'<html><body><span style="color:#1C1C1C;">{thanh_tien:,.0f}</span> <span style="font-size:10pt;">VND</span></body></html>')
+                getattr(self, lbl_total).setText(
+                    f'<html><body><span style="color:#1C1C1C;">{thanh_tien:,.0f}</span> <span style="font-size:10pt;">VND</span></body></html>'
+                )
         if hasattr(self, 'lbl_tong_cong'):
             self.lbl_tong_cong.setText(
                 f'<html><body>Tổng cộng: <span style="font-size:18pt; font-weight:bold;">{tong_tien:,.0f}</span>'
@@ -107,29 +101,44 @@ class PreOrderScreen(QWidget):
             )
 
     def xac_nhan_dat_hang(self):
-        ten     = self.txt_ten_nguoi_nhan.text().strip() if hasattr(self, 'txt_ten_nguoi_nhan') else ''
-        sdt     = self.txt_sdt.text().strip() if hasattr(self, 'txt_sdt') else ''
+        ten = self.txt_ten_nguoi_nhan.text().strip() if hasattr(self, 'txt_ten_nguoi_nhan') else ''
+        sdt = self.txt_sdt.text().strip() if hasattr(self, 'txt_sdt') else ''
         dia_chi = self.txt_dia_chi.toPlainText().strip() if hasattr(self, 'txt_dia_chi') else ''
-        if not ten:     QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập tên người nhận!"); return
-        if not sdt:     QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập số điện thoại!"); return
-        if not dia_chi: QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập địa chỉ nhận hàng!"); return
+        if not ten:
+            QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập tên người nhận!")
+            return
+        if not sdt:
+            QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập số điện thoại!")
+            return
+        if not dia_chi:
+            QMessageBox.warning(self, "Thiếu thông tin", "Vui lòng nhập địa chỉ nhận hàng!")
+            return
         user = get_current_user()
-        if not user: return
+        if not user:
+            return
         try:
             thanh_toan_gio_hang(user.get('user_id'), date.today().strftime('%Y-%m-%d'))
             QMessageBox.information(self, "Thành công", "Đã đặt hàng thành công!\nĐơn hàng đang chờ xác nhận từ nông trại.")
-            switch_window(DanhSachDonHangChuVuaScreen())
+            from screens.danh_sach_don_hang_chu_vua_screen import DanhSachDonHangChuVuaScreen
+            switch_window(DanhSachDonHangChuVuaScreen)
         except Exception as e:
             QMessageBox.critical(self, "Lỗi", f"Không thể đặt hàng: {e}")
 
     def ve_trang_chu(self):
-        switch_window(ChuVuaDashboardScreen())
+        from screens.home_chu_vua_screen import ChuVuaDashboardScreen
+        switch_window(ChuVuaDashboardScreen)
+
     def mo_giao_thuong(self):
-        switch_window(SearchListMatHangScreen())
+        from screens.search_list_mat_hang_screen import SearchListMatHangScreen
+        switch_window(SearchListMatHangScreen)
+
     def mo_ho_so(self):
-        switch_window(ProfileChuVuaScreen())
+        from screens.profile_chu_vua_screen import ProfileChuVuaScreen
+        switch_window(ProfileChuVuaScreen)
+
     def quay_lai_gio_hang(self):
-        switch_window(GioHangScreen())
+        from screens.gio_hang_screen import GioHangScreen
+        switch_window(GioHangScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -138,5 +147,6 @@ class PreOrderScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
