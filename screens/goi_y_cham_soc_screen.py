@@ -1,18 +1,10 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox, QLabel
 from PyQt6 import uic
-
-from utils.window_manager import get_current_user,switch_window
+from utils.window_manager import get_current_user, switch_window
 from logic.logic_mua_vu import lay_danh_sach_vu_mua
 from logic.logic_nhat_ky import lay_nhat_ky_theo_mua_vu
-from screens.home_nong_dan_screen import NongDanDashboardScreen
-from screens.danh_sach_cay_trong import DanhSachCayTrongScreen
-from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
-from screens.luan_canh_screen import LuanCanhScreen
-from screens.dang_san_pham_screen import DangSanPhamScreen
-from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
-from screens.profile_nong_dan_screen import ProfileNongDanScreen
-from screens.login_screen import LoginScreen
 
+# Hằng số không thay đổi
 GOI_Y_CHAM_SOC = {
     'Đang trồng':    [('🚰', 'Tưới nước đều đặn mỗi ngày'), ('🌿', 'Kiểm tra sâu bệnh định kỳ'), ('🪣', 'Bón phân theo chu kỳ')],
     'Sắp thu hoạch': [('🌾', 'Chuẩn bị dụng cụ thu hoạch'), ('📋', 'Kiểm tra chất lượng nông sản'), ('📦', 'Liên hệ đầu ra tiêu thụ')],
@@ -25,7 +17,6 @@ CHU_Y_MAP = {
     'Thu hoạch': [('📦', 'Bảo quản nông sản đúng cách'), ('🌡️', 'Chú ý nhiệt độ kho lưu trữ'), ('✅', 'Phân loại chất lượng sản phẩm')],
 }
 CHU_Y_DEFAULT = [('🔍', 'Theo dõi tình trạng cây trồng hàng ngày'), ('📋', 'Ghi chép đầy đủ nhật ký canh tác'), ('☎️', 'Liên hệ kỹ thuật viên khi cần hỗ trợ')]
-
 
 class GoiYChamSocScreen(QWidget):
     def __init__(self, activity_id=None):
@@ -41,7 +32,7 @@ class GoiYChamSocScreen(QWidget):
                 self.activity_id = ds[0][0]
                 self.trang_thai_vu_mua = ds[0][6]
 
-        # ĐIỀU HƯỚNG SIDEBAR
+        # Kết nối sự kiện sidebar
         if hasattr(self, 'btn_menu_trang_chu'):
             self.btn_menu_trang_chu.clicked.connect(self.ve_trang_chu)
         if hasattr(self, 'btn_menu_quan_ly'):
@@ -55,7 +46,7 @@ class GoiYChamSocScreen(QWidget):
         if hasattr(self, 'btn_dang_xuat'):
             self.btn_dang_xuat.clicked.connect(self.dang_xuat)
 
-        # ĐIỀU HƯỚNG TAB
+        # Tab
         if hasattr(self, 'lbl_tab_danh_sach'):
             self.lbl_tab_danh_sach.mousePressEvent = self.quay_lai_danh_sach
         if hasattr(self, 'lbl_tab_thong_tin'):
@@ -66,8 +57,6 @@ class GoiYChamSocScreen(QWidget):
             self.lbl_subtab_luancanh.mousePressEvent = self.mo_luan_canh
 
         self.tai_noi_dung_goi_y()
-
-    #XỬ LÝ CHÍNH / LOGIC
 
     def tai_noi_dung_goi_y(self):
         ds_goi_y = GOI_Y_CHAM_SOC.get(self.trang_thai_vu_mua, GOI_Y_CHAM_SOC['Đang trồng'])
@@ -80,6 +69,7 @@ class GoiYChamSocScreen(QWidget):
                     ten_cay = f' – {info[1]}'
             self.lbl_title_1.setText(f'Gợi ý chăm sóc hôm nay{ten_cay}')
         self._cap_nhat_dong_checklist('vbox_list_1', ds_goi_y)
+
         ds_chu_y = CHU_Y_DEFAULT
         if self.activity_id:
             nhat_ky = lay_nhat_ky_theo_mua_vu(self.activity_id, limit=1)
@@ -110,26 +100,42 @@ class GoiYChamSocScreen(QWidget):
             if isinstance(lbl_text, QLabel):
                 lbl_text.setText(f'  {text}')
 
-    #ĐIỀU HƯỚNG / CHUYỂN MÀN HÌNH
-
+    # Điều hướng (lazy import)
     def ve_trang_chu(self):
-        switch_window(NongDanDashboardScreen())
+        from screens.home_nong_dan_screen import NongDanDashboardScreen
+        switch_window(NongDanDashboardScreen)
+
     def mo_quan_ly_nong_trai(self):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_giao_thuong(self):
-        switch_window(DangSanPhamScreen())
+        from screens.dang_san_pham_screen import DangSanPhamScreen
+        switch_window(DangSanPhamScreen)
+
     def mo_phan_tich(self):
-        switch_window(PhanTichBaoCaoScreen())
+        from screens.phan_tich_bao_cao_screen import PhanTichBaoCaoScreen
+        switch_window(PhanTichBaoCaoScreen)
+
     def mo_ho_so(self):
-        switch_window(ProfileNongDanScreen())
+        from screens.profile_nong_dan_screen import ProfileNongDanScreen
+        switch_window(ProfileNongDanScreen)
+
     def quay_lai_danh_sach(self, event):
-        switch_window(DanhSachCayTrongScreen())
+        from screens.danh_sach_cay_trong_screen import DanhSachCayTrongScreen
+        switch_window(DanhSachCayTrongScreen)
+
     def mo_thong_tin_chi_tiet(self, event):
-        switch_window(ChiTietCayTrongScreen())
+        from screens.chi_tiet_cay_trong_screen import ChiTietCayTrongScreen
+        switch_window(ChiTietCayTrongScreen)
+
     def mo_nhat_ky(self, event):
-        switch_window(NhatKyCanhTacScreen())
+        from screens.nhat_ky_canh_tac_screen import NhatKyCanhTacScreen
+        switch_window(NhatKyCanhTacScreen)
+
     def mo_luan_canh(self, event):
-        switch_window(LuanCanhScreen())
+        from screens.luan_canh_screen import LuanCanhScreen
+        switch_window(LuanCanhScreen)
 
     def dang_xuat(self):
         reply = QMessageBox.question(
@@ -138,5 +144,6 @@ class GoiYChamSocScreen(QWidget):
         )
         if reply == QMessageBox.StandardButton.Yes:
             from utils.window_manager import set_current_user
+            from screens.login_screen import LoginScreen
             set_current_user(None)
-            switch_window(LoginScreen())
+            switch_window(LoginScreen)
