@@ -1,10 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
 from utils.window_manager import switch_window
-from screens.register_xacthuc_screen import RegisterXacThucScreen
-from screens.login_screen import LoginScreen
-
 
 class RegisterScreen(QWidget):
     def __init__(self):
@@ -16,7 +12,6 @@ class RegisterScreen(QWidget):
         if hasattr(self, 'lbl_dctk'):
             self.lbl_dctk.mousePressEvent = self.quay_lai_login
 
-    # XỬ LÝ CHÍNH
     def xu_ly_dang_ky(self):
         if hasattr(self, 'chk_dieu_khoan') and not self.chk_dieu_khoan.isChecked():
             QMessageBox.warning(self, "Nhắc nhở", "Vui lòng đồng ý với Điều khoản & Chính sách để tiếp tục!")
@@ -32,7 +27,6 @@ class RegisterScreen(QWidget):
                 QMessageBox.warning(self, "Lỗi", "Mật khẩu xác nhận không khớp!")
                 return
 
-        # Xác định role từ radio buttons
         role = 'Farmer'
         if hasattr(self, 'rad_chu_vua') and self.rad_chu_vua.isChecked():
             role = 'Merchant'
@@ -42,7 +36,10 @@ class RegisterScreen(QWidget):
             'password': self.txt_mat_khau.text().strip(),
             'role': role
         }
-        switch_window(RegisterXacThucScreen(user_data))
+
+        from screens.register_xacthuc_screen import RegisterXacThucScreen
+        switch_window(RegisterXacThucScreen, user_data=user_data)
 
     def quay_lai_login(self, event):
-        switch_window(LoginScreen())
+        from screens.login_screen import LoginScreen
+        switch_window(LoginScreen)
